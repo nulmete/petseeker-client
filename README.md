@@ -1,46 +1,186 @@
-# Getting Started with Create React App
+# Setting up ESLint + Prettier
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. Delete `eslintConfig` entry from package.json.
+2. Run `npx eslint --init`.
+3. How would you like to use ESLint? To check syntax, find problems and enforce code style
+4. What type of modules does your project use? JavaScript modules (import/export)
+5. Which framework does your project use? React
+6. Does your project use TypeScript? Yes
+7. Where does your code run? Browser
+8. How would you like to define a style for your project? Use a popular style guide
+9. Which style guide do you want to follow? Airbnb
+10. What format do you want your config file to be in? JavaScript
+11. Would you like to install them now with npm? Yes
 
-## Available Scripts
+TODO: console img
 
-In the project directory, you can run:
 
-### `yarn start`
+12. devDependencies in package.json should now look like this:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+TODO: first devDependencies img
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+13. Install these extra devDependencies:
 
-### `yarn test`
+`npm i -D eslint-config-prettier eslint-plugin-jest prettier eslint-plugin-prettier eslint-import-resolver-typescript`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+TODO: 2nd devDependencies img
 
-### `yarn build`
+14. Modify `.eslintrc.js` file with this:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+module.exports = {
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  extends: [
+    'plugin:react/recommended',
+    'airbnb',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+    "plugin:prettier/recommended"
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 12,
+    sourceType: 'module',
+  },
+  plugins: [
+    'react',
+    '@typescript-eslint',
+    "react-hooks"
+  ],
+  rules: {
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": [
+        "error"
+    ],
+    "react/jsx-filename-extension": [
+        "warn",
+        {
+            "extensions": [
+                ".tsx"
+            ]
+        }
+    ],
+    "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+            "ts": "never",
+            "tsx": "never"
+        }
+    ],
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": [
+        "error"
+    ],
+    "max-len": [
+        "warn",
+        {
+            "code": 80
+        }
+    ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "import/prefer-default-export": "off",
+    "react/prop-types": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  }
+};
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+15. Create `.prettierrc.json` file with this content:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+{
+  "trailingComma": "es5",
+  "tabWidth": 2,
+  "printWidth": 100,
+  "semi": true,
+  "singleQuote": false
+}
+```
 
-### `yarn eject`
+## Integrate with VSCode
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Install ESLint extension
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<img width="910" alt="Screen Shot 2021-09-20 at 9 42 28 AM" src="https://user-images.githubusercontent.com/32375741/134004073-c153b265-fdb8-46eb-a419-1c7f6395f0c2.png">
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+2. Open `settings.json` (Preferences > Settings)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<img width="1383" alt="Screen Shot 2021-09-20 at 9 44 41 AM" src="https://user-images.githubusercontent.com/32375741/134004477-54595d0c-61a9-42c0-b194-c7544ff056fa.png">
 
-## Learn More
+3. Copy this content:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+{
+  "[javascript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[javascriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+      "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+  }
+}
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Integrate with WebStorm
+
+1. Go to `Preferences > Languages & Frameworks > JavaScript > Code Quality Tools > ESLint`.
+2. Select `Automatic ESLint configuration`.
+3. Check `Run eslint --fix on save`.
+
+![Screen Shot 2021-09-20 at 10 03 46 AM](https://user-images.githubusercontent.com/32375741/134006910-5ea86232-5e64-4009-b748-93e32f2405b8.png)
+
+4. Go to `Preferences > Languages & Frameworks > JavaScript > Prettier`.
+5. Select `Prettier package`: `<projectDir>/node_modules/prettier`.
+6. Check `Run on save for files`: `{**/*,*}.{js,ts,jsx,tsx}`.
+
+![Screen Shot 2021-09-20 at 10 07 39 AM](https://user-images.githubusercontent.com/32375741/134007459-c0822044-807a-4a82-bd2d-43dbb8631d21.png)
+
+
+# Setting up Husky
+
+Husky is specifically for a pre-commit hook (running ESLint + Prettier + Test commands), but can be extended to run any other script.
+
+1. Run `npm i -D husky lint-staged`.
+2. Run `npx husky install`.
+3. Run `npx husky add .husky/pre-commit "npx lint-staged"`.
+4. Add a `lint-staged` entry to your package.json:
+
+```
+"lint-staged": {
+  "src/**/*.{js,jsx,ts,tsx}": [
+    "npm run lint:fix",
+    "npm run prettier:write",
+    "npm run test:precommit"
+  ]
+}
+```
+
+5. Add the following scripts to the `scripts` entry in your package.json:
+
+```
+  "test:precommit": "npm run test -- --ci --watchAll=false --findRelatedTests --bail",
+  "lint:fix": "eslint --fix",
+  "prettier:write": "prettier --write",
+```
