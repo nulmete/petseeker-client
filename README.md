@@ -12,18 +12,17 @@
 10. What format do you want your config file to be in? JavaScript
 11. Would you like to install them now with npm? Yes
 
-TODO: console img
-
+![Screen Shot 2021-09-20 at 2 37 44 PM](https://user-images.githubusercontent.com/32375741/134054602-b11f6952-c40f-4770-aec0-460b8b193479.png)
 
 12. devDependencies in package.json should now look like this:
 
-TODO: first devDependencies img
+![Screen Shot 2021-09-20 at 2 48 22 PM](https://user-images.githubusercontent.com/32375741/134054638-7a5daf7f-f3eb-47b9-b601-febd6e44464a.png)
 
 13. Install these extra devDependencies:
 
 `npm i -D eslint-config-prettier eslint-plugin-jest prettier eslint-plugin-prettier eslint-import-resolver-typescript`
 
-TODO: 2nd devDependencies img
+![Screen Shot 2021-09-20 at 2 50 19 PM](https://user-images.githubusercontent.com/32375741/134054673-75fe13fe-4cf5-4792-92e7-aa798078a48e.png)
 
 14. Modify `.eslintrc.js` file with this:
 
@@ -34,66 +33,56 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-    "plugin:prettier/recommended"
+    "plugin:react/recommended",
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended",
   ],
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: "module",
   },
-  plugins: [
-    'react',
-    '@typescript-eslint',
-    "react-hooks"
-  ],
+  plugins: ["react", "@typescript-eslint", "react-hooks"],
   rules: {
     "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": [
-        "error"
-    ],
+    "@typescript-eslint/no-use-before-define": ["error"],
     "react/jsx-filename-extension": [
-        "warn",
-        {
-            "extensions": [
-                ".tsx"
-            ]
-        }
+      "warn",
+      {
+        extensions: [".tsx"],
+      },
     ],
     "import/extensions": [
-        "error",
-        "ignorePackages",
-        {
-            "ts": "never",
-            "tsx": "never"
-        }
+      "error",
+      "ignorePackages",
+      {
+        ts: "never",
+        tsx: "never",
+      },
     ],
     "no-shadow": "off",
-    "@typescript-eslint/no-shadow": [
-        "error"
-    ],
+    "@typescript-eslint/no-shadow": ["error"],
     "max-len": [
-        "warn",
-        {
-            "code": 80
-        }
+      "warn",
+      {
+        code: 80,
+      },
     ],
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "import/prefer-default-export": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
   },
-  "settings": {
+  settings: {
     "import/resolver": {
-      "typescript": {}
-    }
-  }
+      typescript: {},
+    },
+  },
 };
 ```
 
@@ -103,7 +92,7 @@ module.exports = {
 {
   "trailingComma": "es5",
   "tabWidth": 2,
-  "printWidth": 100,
+  "printWidth": 80,
   "semi": true,
   "singleQuote": false
 }
