@@ -1,3 +1,10 @@
+This is a basic React + Typescript project with initial ESLint + Prettier configuration, following the Airbnb style guide.
+Husky is also set up with two hooks:
+1. Pre-commit: runs ESLint, Prettier and Jest tests.
+2. Post-merge: runs npm install.
+
+If you want to implement these in an existing project, follow the steps below:
+
 # Setting up ESLint + Prettier
 
 1. Delete `eslintConfig` entry from package.json.
