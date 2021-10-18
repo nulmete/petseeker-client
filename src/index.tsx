@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@emotion/react";
+import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import theme from "./theme/theme";
@@ -9,8 +10,10 @@ import theme from "./theme/theme";
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
+      <BrowserRouter>
+        <CssBaseline />
+        <App />
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
