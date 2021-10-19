@@ -1,24 +1,38 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import { NavLink } from "react-router-dom";
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+} from "react-router-dom";
+import Button from "@mui/material/Button";
+
+const sections = [
+  {
+    title: "Home",
+    path: "/dashboard",
+  },
+  {
+    title: "Publications",
+    path: "/dashboard/publications",
+  },
+];
 
 interface Props {
   drawerWidth: number;
 }
 
-const ResponsiveDrawer: React.FC<Props> = ({ drawerWidth = 240 }) => {
+const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
   const [mobileOpen, setMobileOpen] = React.useState<boolean>(false);
 
   const handleDrawerToggle = () => {
@@ -30,14 +44,17 @@ const ResponsiveDrawer: React.FC<Props> = ({ drawerWidth = 240 }) => {
       <Toolbar />
       <Divider />
       <List>
-        {["Publicaciones", "Test1", "Test2"].map((text) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              <InboxIcon />
-            </ListItemIcon>
-            <Link component={NavLink} to="/">
-              {text}
-            </Link>
+        {sections.map(({ title, path }) => (
+          <ListItem key={title} disableGutters>
+            <Button
+              component={RouterLink}
+              to={path}
+              variant="text"
+              color="primary"
+              sx={{ width: "100%" }}
+            >
+              {title}
+            </Button>
           </ListItem>
         ))}
       </List>
@@ -108,4 +125,4 @@ const ResponsiveDrawer: React.FC<Props> = ({ drawerWidth = 240 }) => {
   );
 };
 
-export default ResponsiveDrawer;
+export default Sidebar;

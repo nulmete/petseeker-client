@@ -1,8 +1,11 @@
 import React from "react";
-import Layout from "./components/Layout";
+import { useRoutes } from "react-router-dom";
+import routes from "./routes";
 
 const App: React.FC = () => {
-  return <Layout />;
+  const content = useRoutes(routes);
+
+  return content;
 };
 
 export default App;

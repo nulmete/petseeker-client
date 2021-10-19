@@ -1,10 +1,21 @@
-import { Button, TextField } from "@mui/material";
-import React from "react";
+import { Box, Button, Container, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import ButtonAdd from "../../components/Button/ButtonAdd";
+import Publication from "../../components/Publication/Publication";
 import useForm from "../../hooks/useForm";
 import PublicationService from "../../services/publications";
 import IPublication from "../../types/Publication";
 
 const Publications: React.FC = () => {
+  const [publications, setPublications] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const response = await PublicationService.get();
+      setPublications(response.data as any);
+    })();
+  }, []);
+
   const cb = async (values: IPublication) => {
     const { nombre, otroString, unString } = values;
 
@@ -26,9 +37,30 @@ const Publications: React.FC = () => {
   });
 
   return (
-    <div>
-      <h2>Publicaciones</h2>
-      <br />
+    <Container maxWidth="xl">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <h2>Publicaciones</h2>
+        <ButtonAdd entity="Publicacion" />
+      </Box>
+      <div>
+        {publications.map((publication) => (
+          <Box
+            sx={{
+              "&:not(:last-of-type)": {
+                marginBottom: "1rem",
+              },
+            }}
+          >
+            <Publication />
+          </Box>
+        ))}
+      </div>
       <form onSubmit={handleSubmit} noValidate autoComplete="off">
         <TextField
           name="nombre"
@@ -60,7 +92,7 @@ const Publications: React.FC = () => {
           </Button>
         </div>
       </form>
-    </div>
+    </Container>
   );
 };
 
