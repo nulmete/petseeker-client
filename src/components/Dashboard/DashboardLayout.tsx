@@ -5,7 +5,7 @@ import Sidebar from "../Sidebar/Sidebar";
 // import MainContent from "./MainContent";
 
 const DashboardLayout: React.FC = () => {
-  const drawerWidth = 240;
+  const drawerWidth = 350;
 
   return (
     <Box sx={{ display: "flex" }}>

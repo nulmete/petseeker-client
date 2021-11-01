@@ -6,6 +6,7 @@ import MainLayout from "./components/MainLayout";
 
 // Pages
 import Publications from "./pages/Dashboard/Publications";
+import PublicationAdd from "./pages/Dashboard/PublicationAdd";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -25,7 +26,16 @@ const routes = [
       },
       {
         path: "publications",
-        element: <Publications />,
+        children: [
+          {
+            path: "",
+            element: <Publications />,
+          },
+          {
+            path: "add",
+            element: <PublicationAdd />,
+          },
+        ],
       },
     ],
   },

@@ -1,10 +1,10 @@
-import { Box, Button, Container, TextField } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ButtonAdd from "../../components/Button/ButtonAdd";
 import Publication from "../../components/Publication/Publication";
-import useForm from "../../hooks/useForm";
 import PublicationService from "../../services/publications";
-import IPublication from "../../types/Publication";
+import { IPublication } from "../../types/Publication";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState([]);
@@ -13,28 +13,24 @@ const Publications: React.FC = () => {
     (async () => {
       const response = await PublicationService.get();
       setPublications(response.data as any);
+      console.log(response.data);
     })();
   }, []);
 
-  const cb = async (values: IPublication) => {
-    const { nombre, otroString, unString } = values;
+  const navigate = useNavigate();
 
-    alert(`Creando publicacion: ${nombre} - ${otroString} - ${unString}`);
-
-    const response = await PublicationService.create({
-      nombre,
-      otroString,
-      unString,
-    });
-
-    console.log({ response });
+  const handlePublicationAdd = () => {
+    navigate("add");
   };
 
-  const { values, handleInputChange, handleSubmit } = useForm(cb, {
-    nombre: "",
-    otroString: "",
-    unString: "",
-  });
+  const handlePublicationDelete = async (id: number) => {
+    const response = await PublicationService.remove(id);
+    console.log({ response });
+
+    // TODO: if status is 200, then remove publication from state
+
+    // TODO: if status is 404, then publication was not found on DB
+  };
 
   return (
     <Container maxWidth="xl">
@@ -46,7 +42,7 @@ const Publications: React.FC = () => {
         }}
       >
         <h2>Publicaciones</h2>
-        <ButtonAdd entity="Publicacion" />
+        <ButtonAdd entity="Publicacion" onClick={handlePublicationAdd} />
       </Box>
       <div>
         {publications.map((publication) => (
@@ -57,41 +53,13 @@ const Publications: React.FC = () => {
               },
             }}
           >
-            <Publication />
+            {/* TODO: I need publication.id field */}
+            <Publication
+              handlePublicationDelete={() => handlePublicationDelete(2)}
+            />
           </Box>
         ))}
       </div>
-      <form onSubmit={handleSubmit} noValidate autoComplete="off">
-        <TextField
-          name="nombre"
-          value={values.nombre}
-          onChange={handleInputChange}
-          id="outlined-basic"
-          label="Nombre"
-          variant="outlined"
-        />
-        <TextField
-          name="otroString"
-          value={values.otroString}
-          onChange={handleInputChange}
-          id="outlined-basic"
-          label="OtroString"
-          variant="outlined"
-        />
-        <TextField
-          name="unString"
-          value={values.unString}
-          onChange={handleInputChange}
-          id="outlined-basic"
-          label="UnString"
-          variant="outlined"
-        />
-        <div>
-          <Button type="submit" variant="outlined">
-            Crear
-          </Button>
-        </div>
-      </form>
     </Container>
   );
 };

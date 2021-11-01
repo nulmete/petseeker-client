@@ -1,19 +1,22 @@
-import IPublication from "../types/Publication";
+import { IPublication } from "../types/Publication";
 import http from "../utils/http";
 
-// GET
 const get = () => {
   return http.get("/publications/list");
 };
 
-// POST
-const create = (data: IPublication) => {
-  return http.post("/publications", data);
+const add = (data: IPublication) => {
+  return http.post("/publication/add", data);
+};
+
+const remove = (id: number) => {
+  return http.delete(`/publication/delete/${id}`);
 };
 
 const PublicationService = {
   get,
-  create,
+  add,
+  remove,
 };
 
 export default PublicationService;
