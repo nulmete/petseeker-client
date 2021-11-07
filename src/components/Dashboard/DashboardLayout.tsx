@@ -1,8 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Box, Toolbar } from "@mui/material";
+import { Box, Container, Toolbar } from "@mui/material";
 import Sidebar from "../Sidebar/Sidebar";
-// import MainContent from "./MainContent";
 
 const DashboardLayout: React.FC = () => {
   const drawerWidth = 350;
@@ -20,7 +19,9 @@ const DashboardLayout: React.FC = () => {
         }}
       >
         <Toolbar />
+        {/* <Container maxWidth="xl"> */}
         <Outlet />
+        {/* </Container> */}
       </Box>
     </Box>
   );

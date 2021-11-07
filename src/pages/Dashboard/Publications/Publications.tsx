@@ -1,10 +1,10 @@
 import { Box, Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ButtonAdd from "../../components/Button/ButtonAdd";
-import Publication from "../../components/Publication/Publication";
-import PublicationService from "../../services/publications";
-import { IPublication } from "../../types/Publication";
+import ButtonAdd from "../../../components/Button/ButtonAdd";
+import Publication from "../../../components/Publication/Publication";
+import PublicationService from "../../../services/publications";
+import { IPublication } from "../../../types/Publication";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState([]);

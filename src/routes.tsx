@@ -5,8 +5,8 @@ import DashboardLayout from "./components/Dashboard/DashboardLayout";
 import MainLayout from "./components/MainLayout";
 
 // Pages
-import Publications from "./pages/Dashboard/Publications";
-import PublicationAdd from "./pages/Dashboard/PublicationAdd";
+import Publications from "./pages/Dashboard/Publications/Publications";
+import PublicationAdd from "./pages/Dashboard/Publications/PublicationAdd";
 import DashboardHome from "./pages/Dashboard/DashboardHome";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
