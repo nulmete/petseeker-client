@@ -87,7 +87,11 @@ const CustomMap: React.FC<Props> = ({ getLocationCallback }) => {
         onClick={onMapClick}
       >
         {clickedPos.lat && clickedPos.lng ? (
-          <Marker position={clickedPos} />
+          <Marker
+            title="hola"
+            label="chauchauchauchauchauchauchauchauchauchauchauchauchau"
+            position={clickedPos}
+          />
         ) : null}
       </GoogleMap>
     </>

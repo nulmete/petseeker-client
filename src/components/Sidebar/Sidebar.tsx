@@ -10,21 +10,17 @@ import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Link from "@mui/material/Link";
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-} from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import Button from "@mui/material/Button";
 
 const sections = [
   {
-    title: "Home",
-    path: "/dashboard",
+    title: "Publicaciones",
+    path: "/dashboard/publicaciones",
   },
   {
-    title: "Publications",
-    path: "/dashboard/publications",
+    title: "Perfil",
+    path: "/dashboard/perfil",
   },
 ];
 

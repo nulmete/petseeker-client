@@ -1,11 +1,10 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
 
-const MainLayout: React.FC = () => {
+const MainLayout: React.FC = ({ children }) => {
   return (
     <div>
       <div>MainLayout</div>
-      <Outlet />
+      {children}
     </div>
   );
 };

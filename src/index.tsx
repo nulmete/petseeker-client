@@ -6,13 +6,17 @@ import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import theme from "./theme/theme";
+import Auth0ProviderWithHistory from "./auth/auth0-provider-with-history";
+import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <CssBaseline />
-        <App />
+        <Auth0ProviderWithHistory>
+          <CssBaseline />
+          <App />
+        </Auth0ProviderWithHistory>
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,

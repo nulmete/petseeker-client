@@ -1,10 +1,11 @@
 import { Box, Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import ButtonAdd from "../../../components/Button/ButtonAdd";
+import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import Publication from "../../../components/Publication/Publication";
 import PublicationService from "../../../services/publications";
-import { IPublication } from "../../../types/Publication";
+// import { IPublication } from "../../../types/Publication";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState([]);
@@ -17,10 +18,10 @@ const Publications: React.FC = () => {
     })();
   }, []);
 
-  const navigate = useNavigate();
+  const history = useHistory();
 
   const handlePublicationAdd = () => {
-    navigate("add");
+    history.push("/dashboard/publicaciones/agregar");
   };
 
   const handlePublicationDelete = async (id: number) => {
@@ -33,34 +34,36 @@ const Publications: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <h2>Publicaciones</h2>
-        <ButtonAdd entity="Publicacion" onClick={handlePublicationAdd} />
-      </Box>
-      <div>
-        {publications.map((publication) => (
-          <Box
-            sx={{
-              "&:not(:last-of-type)": {
-                marginBottom: "1rem",
-              },
-            }}
-          >
-            {/* TODO: I need publication.id field */}
-            <Publication
-              handlePublicationDelete={() => handlePublicationDelete(2)}
-            />
-          </Box>
-        ))}
-      </div>
-    </Container>
+    <DashboardLayout>
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h2>Publicaciones</h2>
+          <ButtonAdd entity="Publicacion" onClick={handlePublicationAdd} />
+        </Box>
+        <div>
+          {publications.map((publication) => (
+            <Box
+              sx={{
+                "&:not(:last-of-type)": {
+                  marginBottom: "1rem",
+                },
+              }}
+            >
+              {/* TODO: I need publication.id field */}
+              <Publication
+                handlePublicationDelete={() => handlePublicationDelete(2)}
+              />
+            </Box>
+          ))}
+        </div>
+      </Container>
+    </DashboardLayout>
   );
 };
 
