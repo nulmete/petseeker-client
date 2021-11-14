@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 // Pages
 import Profile from "./pages/Dashboard/Profile/Profile";
 import PublicationAdd from "./pages/Dashboard/Publications/PublicationAdd";
+import PublicationDetail from "./pages/Dashboard/Publications/PublicationDetail";
 import Publications from "./pages/Dashboard/Publications/Publications";
 import Home from "./pages/Home";
 import Onboarding from "./pages/Onboarding";
@@ -24,6 +25,11 @@ const App: React.FC = () => {
         path="/dashboard/publicaciones"
         exact
         component={Publications}
+      />
+      <ProtectedRoute
+        path="/dashboard/publicaciones/:id"
+        exact
+        component={PublicationDetail}
       />
       <ProtectedRoute
         path="/dashboard/publicaciones/agregar"

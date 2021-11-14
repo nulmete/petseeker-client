@@ -46,7 +46,6 @@ const PublicationAdd: React.FC = () => {
     validationSchema,
     onSubmit: async (values) => {
       alert(JSON.stringify(values, null, 2));
-
       const response = await PublicationService.add(dummyPublication);
       console.log({ response });
     },

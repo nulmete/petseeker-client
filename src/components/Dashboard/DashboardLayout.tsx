@@ -3,7 +3,7 @@ import { Box, Toolbar } from "@mui/material";
 import Sidebar from "../Sidebar/Sidebar";
 
 const DashboardLayout: React.FC = ({ children }) => {
-  const drawerWidth = 350;
+  const drawerWidth = 280;
 
   return (
     <Box sx={{ display: "flex" }}>

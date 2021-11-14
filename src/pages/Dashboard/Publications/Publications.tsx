@@ -1,20 +1,19 @@
-import { Box, Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { Box, Container, Grid } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import ButtonAdd from "../../../components/Button/ButtonAdd";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import Publication from "../../../components/Publication/Publication";
 import PublicationService from "../../../services/publications";
-// import { IPublication } from "../../../types/Publication";
+import { IPublication } from "../../../types/Publication";
 
 const Publications: React.FC = () => {
-  const [publications, setPublications] = useState([]);
+  const [publications, setPublications] = useState<IPublication[]>([]);
 
   useEffect(() => {
     (async () => {
       const response = await PublicationService.get();
-      setPublications(response.data as any);
-      console.log(response.data);
+      setPublications(response);
     })();
   }, []);
 
@@ -33,6 +32,10 @@ const Publications: React.FC = () => {
     // TODO: if status is 404, then publication was not found on DB
   };
 
+  const handlePublicationDetail = (id: number) => {
+    history.push(`/dashboard/publicaciones/${id}`);
+  };
+
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
@@ -46,22 +49,28 @@ const Publications: React.FC = () => {
           <h2>Publicaciones</h2>
           <ButtonAdd entity="Publicacion" onClick={handlePublicationAdd} />
         </Box>
-        <div>
+        <Grid container spacing={2}>
           {publications.map((publication) => (
-            <Box
-              sx={{
-                "&:not(:last-of-type)": {
-                  marginBottom: "1rem",
-                },
-              }}
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              xl={2}
+              key={publication.publication_id}
             >
-              {/* TODO: I need publication.id field */}
               <Publication
-                handlePublicationDelete={() => handlePublicationDelete(2)}
+                handlePublicationDelete={() =>
+                  handlePublicationDelete(publication.publication_id!)
+                }
+                handlePublicationDetail={() => {
+                  handlePublicationDetail(publication.publication_id!);
+                }}
               />
-            </Box>
+            </Grid>
           ))}
-        </div>
+        </Grid>
       </Container>
     </DashboardLayout>
   );

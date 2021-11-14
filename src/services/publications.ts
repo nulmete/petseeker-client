@@ -1,8 +1,9 @@
 import { IPublication } from "../types/Publication";
 import http from "../utils/http";
 
-const get = () => {
-  return http.get("/publications/list");
+const get = async (): Promise<IPublication[]> => {
+  const response = await http.get<IPublication[]>("/publications/list");
+  return response.data;
 };
 
 const add = (data: IPublication) => {
