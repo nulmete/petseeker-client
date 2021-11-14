@@ -7,7 +7,9 @@ const LoginButton: React.FC = () => {
     <button
       type="button"
       onClick={() =>
-        loginWithRedirect({ redirectUri: "http://localhost:3000/dashboard" })
+        loginWithRedirect({
+          redirectUri: "http://localhost:3000/dashboard/publicaciones",
+        })
       }
     >
       Log In

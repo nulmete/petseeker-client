@@ -12,11 +12,13 @@ const Auth0ProviderWithHistory: React.FC = ({ children }) => {
     history.push(appState?.returnTo || window.location.pathname);
   };
 
+  const redirectUri = `${window.location.origin}/dashboard/publicaciones`;
+
   return (
     <Auth0Provider
       domain={domain}
       clientId={clientId}
-      redirectUri={window.location.origin}
+      redirectUri={redirectUri}
       onRedirectCallback={onRedirectCallback}
     >
       {children}
