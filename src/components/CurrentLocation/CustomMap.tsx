@@ -2,11 +2,6 @@ import React from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { Button } from "@mui/material";
 
-const center = {
-  lat: -35.0,
-  lng: -59.0,
-};
-
 interface Props {
   getLocationCallback: (location: string) => void;
 }
@@ -76,7 +71,6 @@ const CustomMap: React.FC<Props> = ({ getLocationCallback }) => {
           width: "100%",
           height: "100vh",
         }}
-        center={center}
         options={{
           disableDefaultUI: true,
           zoomControl: true,
@@ -87,11 +81,7 @@ const CustomMap: React.FC<Props> = ({ getLocationCallback }) => {
         onClick={onMapClick}
       >
         {clickedPos.lat && clickedPos.lng ? (
-          <Marker
-            title="hola"
-            label="chauchauchauchauchauchauchauchauchauchauchauchauchau"
-            position={clickedPos}
-          />
+          <Marker position={clickedPos} />
         ) : null}
       </GoogleMap>
     </>

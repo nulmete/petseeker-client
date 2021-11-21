@@ -61,6 +61,7 @@ const Publications: React.FC = () => {
               key={publication.publication_id}
             >
               <Publication
+                publication={publication}
                 handlePublicationDelete={() =>
                   handlePublicationDelete(publication.publication_id!)
                 }

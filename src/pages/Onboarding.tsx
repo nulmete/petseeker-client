@@ -2,6 +2,7 @@ import React from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Container, Box, TextField, Theme, Button } from "@mui/material";
+import { useParams } from "react-router-dom";
 import UserService from "../services/users";
 
 const validationSchema = yup.object({
@@ -31,7 +32,13 @@ const validationSchema = yup.object({
     .required("Requerido."),
 });
 
+interface ParamTypes {
+  id: string;
+}
+
 const Onboarding: React.FC = () => {
+  const { id: auth0Id } = useParams<ParamTypes>();
+
   const continueAuth = async () => {
     const auth0Domain = process.env.REACT_APP_AUTH0_DOMAIN;
     const urlParams = new URLSearchParams(window.location.search);
@@ -55,6 +62,7 @@ const Onboarding: React.FC = () => {
       // TODO: hardcoding email and picPath because backend needs them
       const response = await UserService.create({
         ...values,
+        uuid: auth0Id,
         email: "fake@email.com",
         picPath: "somePath",
       });

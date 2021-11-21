@@ -12,6 +12,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
 import Button from "@mui/material/Button";
+import LogoutButton from "../Auth/LogoutButton";
 
 const sections = [
   {
@@ -53,6 +54,11 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
             </Button>
           </ListItem>
         ))}
+        {/* Additional ListItem for logging out */}
+        <ListItem>
+          {/* TODO: improve styling */}
+          <LogoutButton />
+        </ListItem>
       </List>
     </div>
   );

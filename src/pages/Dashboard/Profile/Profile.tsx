@@ -1,15 +1,16 @@
 import React from "react";
-
-import { useAuth0 } from "@auth0/auth0-react";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
+import { useUserContext } from "../../../context/sessionContext";
 
 const Profile: React.FC = () => {
-  const { user } = useAuth0();
+  const { currentUser } = useUserContext();
+
+  console.log({ currentUser });
 
   return (
     <DashboardLayout>
       <pre className="col-12 text-light bg-dark p-4">
-        {JSON.stringify(user, null, 2)}
+        {JSON.stringify(currentUser, null, 2)}
       </pre>
     </DashboardLayout>
   );

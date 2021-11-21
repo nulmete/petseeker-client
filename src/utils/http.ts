@@ -3,7 +3,7 @@ import { baseURL } from "../config";
 
 export default axios.create({
   baseURL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
