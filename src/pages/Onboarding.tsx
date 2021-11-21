@@ -1,36 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
-import * as yup from "yup";
 import { Container, Box, TextField, Theme, Button } from "@mui/material";
 import { useParams } from "react-router-dom";
 import UserService from "../services/users";
-
-const validationSchema = yup.object({
-  names: yup
-    .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
-    .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
-    .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
-    .required("Requerido."),
-  surnames: yup
-    .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
-    .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
-    .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
-    .required("Requerido."),
-  province: yup.string().required("Requerido."),
-  city: yup.string().required("Requerido."),
-  postalCode: yup
-    .string()
-    .required("Requerido.")
-    .min(4, "Debe tener una longitud de 4 caracteres.")
-    .max(4, "Debe tener una longitud de 4 caracteres."),
-  // TODO: find a better regex for phoneNum validation?
-  phoneNum: yup
-    .string()
-    .matches(/^\d+$/, "Solo debe contener numeros.")
-    .required("Requerido."),
-});
+import { userProfileSchema } from "../utils/validationSchemas";
+import FormWrapper from "../components/Form/FormWrapper";
 
 interface ParamTypes {
   id: string;
@@ -56,9 +30,8 @@ const Onboarding: React.FC = () => {
       postalCode: "",
       phoneNum: "",
     },
-    validationSchema,
+    validationSchema: userProfileSchema,
     onSubmit: async (values) => {
-      alert(JSON.stringify(values, null, 2));
       // TODO: hardcoding email and picPath because backend needs them
       const response = await UserService.create({
         ...values,
@@ -66,7 +39,6 @@ const Onboarding: React.FC = () => {
         email: "fake@email.com",
         picPath: "somePath",
       });
-      console.log({ response });
 
       if (response.status !== 201) {
         alert("Something went wrong.");
@@ -80,15 +52,7 @@ const Onboarding: React.FC = () => {
   return (
     <Container maxWidth="xl">
       <h2>Completar Perfil</h2>
-      <Box
-        component="form"
-        onSubmit={formik.handleSubmit}
-        sx={{
-          "& > *:not(:last-child)": {
-            marginBottom: (theme: Theme) => theme.spacing(2),
-          },
-        }}
-      >
+      <FormWrapper onSubmit={formik.handleSubmit}>
         <TextField
           fullWidth
           id="names"
@@ -180,7 +144,7 @@ const Onboarding: React.FC = () => {
             Confirmar
           </Button>
         </div>
-      </Box>
+      </FormWrapper>
     </Container>
   );
 };
