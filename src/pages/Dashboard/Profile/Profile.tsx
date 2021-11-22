@@ -14,6 +14,7 @@ import { useUserContext } from "../../../context/sessionContext";
 import UserImage from "../../../assets/avatar.png";
 import { userProfileSchema } from "../../../utils/validationSchemas";
 import FormWrapper from "../../../components/Form/FormWrapper";
+import FilesService from "../../../services/files";
 
 const Profile: React.FC = () => {
   const { currentUser } = useUserContext();
@@ -34,6 +35,18 @@ const Profile: React.FC = () => {
     },
   });
 
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const img = e.target.files?.[0];
+    console.log({ img });
+    if (img != null) {
+      console.log("not null");
+      const formData = new FormData();
+      formData.append("files", img);
+      const response = await FilesService.upload(formData);
+      console.log({ response });
+    }
+  };
+
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
@@ -45,6 +58,7 @@ const Profile: React.FC = () => {
                 id="icon-button-file"
                 type="file"
                 style={{ display: "none" }}
+                onChange={handleImageChange}
               />
               <IconButton
                 color="primary"
@@ -158,7 +172,11 @@ const Profile: React.FC = () => {
                 variant="outlined"
               />
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Button type="submit" variant="outlined">
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  disabled={!(formik.isValid && formik.dirty)}
+                >
                   Confirmar
                 </Button>
                 <Button
