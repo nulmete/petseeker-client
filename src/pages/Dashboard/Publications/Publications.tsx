@@ -6,6 +6,7 @@ import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import Publication from "../../../components/Publication/Publication";
 import PublicationService from "../../../services/publications";
 import { IPublication } from "../../../types/Publication";
+import PageHeader from "../../../components/Typography/PageHeader";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState<IPublication[]>([]);
@@ -46,7 +47,7 @@ const Publications: React.FC = () => {
             justifyContent: "space-between",
           }}
         >
-          <h2>Publicaciones</h2>
+          <PageHeader>Publicaciones</PageHeader>
           <ButtonAdd entity="Publicacion" onClick={handlePublicationAdd} />
         </Box>
         <Grid container spacing={2}>

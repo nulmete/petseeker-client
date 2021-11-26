@@ -9,20 +9,22 @@ import {
   Box,
 } from "@mui/material";
 import { useFormik } from "formik";
+import { useSnackbar } from "notistack";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
 import UserImage from "../../../assets/avatar.png";
 import { userProfileSchema } from "../../../utils/validationSchemas";
 import FormWrapper from "../../../components/Form/FormWrapper";
 import FilesService from "../../../services/files";
+import UserService from "../../../services/users";
+import { IUser } from "../../../types/User";
 
 const Profile: React.FC = () => {
-  const { currentUser } = useUserContext();
+  const { currentUser, setCurrentUser } = useUserContext();
+  const { enqueueSnackbar } = useSnackbar();
 
   const formik = useFormik({
     initialValues: {
-      names: currentUser?.names || "",
-      surnames: currentUser?.surnames || "",
       address: currentUser?.address || "",
       province: currentUser?.province || "",
       city: currentUser?.city || "",
@@ -31,7 +33,34 @@ const Profile: React.FC = () => {
     },
     validationSchema: userProfileSchema,
     onSubmit: async (values) => {
-      console.log({ values });
+      // Also send email, id, uuid, names, surnames, picPath from currentUser
+      const { id, uuid, names, surnames, email, picPath } = currentUser!;
+      const allValues = {
+        id,
+        uuid,
+        names,
+        surnames,
+        email,
+        picPath,
+        ...values,
+      };
+      try {
+        const response = await UserService.update(allValues);
+        if (response.status === 200) {
+          enqueueSnackbar("Su información fue actualizada con éxito.", {
+            variant: "success",
+          });
+          setCurrentUser(response.data as IUser);
+          formik.resetForm();
+        }
+      } catch (error) {
+        enqueueSnackbar(
+          "Hubo un error actualizando su información,por favor reintente más tarde.",
+          {
+            variant: "error",
+          }
+        );
+      }
     },
   });
 
@@ -75,32 +104,6 @@ const Profile: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <FormWrapper onSubmit={formik.handleSubmit}>
-              <TextField
-                fullWidth
-                id="names"
-                name="names"
-                label="Nombre"
-                value={formik.values.names}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.names && Boolean(formik.errors.names)}
-                helperText={formik.touched.names && formik.errors.names}
-                variant="outlined"
-              />
-              <TextField
-                fullWidth
-                id="surnames"
-                name="surnames"
-                label="Apellido"
-                value={formik.values.surnames}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.surnames && Boolean(formik.errors.surnames)
-                }
-                helperText={formik.touched.surnames && formik.errors.surnames}
-                variant="outlined"
-              />
               <TextField
                 fullWidth
                 id="address"

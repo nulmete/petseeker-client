@@ -1,6 +1,11 @@
 import { IPublication } from "../types/Publication";
 import http from "../utils/http";
 
+const getById = async (id: string): Promise<IPublication> => {
+  const response = await http.get<IPublication>(`publication/${id}`);
+  return response.data;
+};
+
 const get = async (): Promise<IPublication[]> => {
   const response = await http.get<IPublication[]>("/publications/list");
   return response.data;
@@ -15,6 +20,7 @@ const remove = (id: number) => {
 };
 
 const PublicationService = {
+  getById,
   get,
   add,
   remove,

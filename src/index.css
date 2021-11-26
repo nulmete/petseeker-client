@@ -17,3 +17,19 @@
   align-items: center;
   justify-content: center;
 }
+
+.spacing-xs > * + * {
+  margin-top: .5rem !important;
+}
+
+.spacing-sm > * + * {
+  margin-top: 1rem !important;
+}
+
+.spacing-md > * + * {
+  margin-top: 1.5rem !important;
+}
+
+.spacing-lg > * + * {
+  margin-top: 2rem !important;
+}

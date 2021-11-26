@@ -18,7 +18,7 @@ import { useUserContext } from "./context/sessionContext";
 
 const App: React.FC = () => {
   const { user, isLoading } = useAuth0();
-  const { setCurrentUser } = useUserContext();
+  const { currentUser, setCurrentUser } = useUserContext();
 
   const getCurrentUser = (uuid: string) => {
     return UserService.getUserByUUID(uuid);
@@ -29,6 +29,7 @@ const App: React.FC = () => {
       const uuid = user.sub.split("|")[1];
       getCurrentUser(uuid)
         .then((res) => {
+          console.log({ res });
           setCurrentUser(res);
         })
         .catch((e) => {

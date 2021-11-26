@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   Box,
   Button,
@@ -14,6 +15,8 @@ import { useFormik } from "formik";
 import PublicationService from "../../../services/publications";
 import CustomMap from "../../../components/CurrentLocation/CustomMap";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
+import { useUserContext } from "../../../context/sessionContext";
+import PageHeader from "../../../components/Typography/PageHeader";
 
 const validationSchema = yup.object({
   title: yup
@@ -38,6 +41,8 @@ const validationSchema = yup.object({
 });
 
 const PublicationAdd: React.FC = () => {
+  const { currentUser } = useUserContext();
+
   const formik = useFormik({
     initialValues: {
       // esto no esta en los campos del caso de uso
@@ -53,8 +58,10 @@ const PublicationAdd: React.FC = () => {
       comments: [],
       sightings: [],
       // TODO: should be current user fetched from API (match with auth0 also)
-      author_id: 1,
-      author_name: "author_name",
+      // eslint-disable-next-line radix
+      // author_id: parseInt(currentUser!.uuid),
+      author_id: 99,
+      author_name: currentUser!.names,
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -68,8 +75,8 @@ const PublicationAdd: React.FC = () => {
 
       // TODO: if there aren't errors, go to the
       // detail page of the created publication
-      // Alt 1: GET all pubs and get the id of the last one
-      // Alt 2: retrieve id from backend when pub is created
+
+      formik.resetForm();
     },
   });
 
@@ -90,128 +97,135 @@ const PublicationAdd: React.FC = () => {
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
-        <h2>Agregar publicacion</h2>
-        <Box
-          component="form"
-          onSubmit={formik.handleSubmit}
-          sx={{
-            "& > *:not(:last-child)": {
-              marginBottom: (theme: Theme) => theme.spacing(2),
-            },
-          }}
-        >
-          <TextField
-            fullWidth
-            id="title"
-            name="title"
-            label="Titulo"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.title && Boolean(formik.errors.title)}
-            helperText={formik.touched.title && formik.errors.title}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            id="pet_name"
-            name="pet_name"
-            label="Nombre de la mascota"
-            value={formik.values.pet_name}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.pet_name && Boolean(formik.errors.pet_name)}
-            helperText={formik.touched.pet_name && formik.errors.pet_name}
-            variant="outlined"
-          />
-          <TextField
-            fullWidth
-            id="pet_race"
-            name="pet_race"
-            label="Raza"
-            value={formik.values.pet_race}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.pet_race && Boolean(formik.errors.pet_race)}
-            helperText={formik.touched.pet_race && formik.errors.pet_race}
-            variant="outlined"
-          />
-          {/* TODO: make a dropdown */}
-          <TextField
-            fullWidth
-            id="pub_type"
-            name="pub_type"
-            label="Tipo de publicacion"
-            value={formik.values.pub_type}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.pub_type && Boolean(formik.errors.pub_type)}
-            helperText={formik.touched.pub_type && formik.errors.pub_type}
-            variant="outlined"
-          />
-          <div>
-            <Grid container spacing={2} alignItems="stretch">
-              <Grid item xs={8} sm={9} md={10}>
-                <TextField
-                  fullWidth
-                  id="pet_location"
-                  name="pet_location"
-                  label="Ubicacion"
-                  value={formik.values.pet_location}
-                  onBlur={formik.handleBlur}
-                  error={
-                    formik.touched.pet_location &&
-                    Boolean(formik.errors.pet_location)
-                  }
-                  helperText={
-                    formik.touched.pet_location && formik.errors.pet_location
-                  }
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item xs={4} sm={3} md={2}>
-                <Button
-                  sx={{ height: "100%" }}
-                  fullWidth
-                  variant="outlined"
-                  onClick={handleOpenMap}
-                >
-                  Elegir ubicacion
-                </Button>
-              </Grid>
-            </Grid>
-            <Dialog
+        <div className="spacing-md">
+          <PageHeader>Agregar publicacion</PageHeader>
+          <Box
+            component="form"
+            onSubmit={formik.handleSubmit}
+            sx={{
+              "& > *:not(:last-child)": {
+                marginBottom: (theme: Theme) => theme.spacing(2),
+              },
+            }}
+          >
+            <TextField
               fullWidth
-              maxWidth="lg"
-              onClose={handleCloseMap}
-              open={mapOpen}
-            >
-              <DialogTitle>Ubicacion</DialogTitle>
-              <CustomMap getLocationCallback={getLocationCallback} />
-            </Dialog>
-          </div>
-          <TextField
-            multiline
-            rows={4}
-            fullWidth
-            id="description"
-            name="description"
-            label="Notas adicionales"
-            value={formik.values.description}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={
-              formik.touched.description && Boolean(formik.errors.description)
-            }
-            helperText={formik.touched.description && formik.errors.description}
-            variant="outlined"
-          />
-          <div>
-            <Button type="submit" variant="outlined">
-              Crear
-            </Button>
-          </div>
-        </Box>
+              id="title"
+              name="title"
+              label="Titulo"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.title && Boolean(formik.errors.title)}
+              helperText={formik.touched.title && formik.errors.title}
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              id="pet_name"
+              name="pet_name"
+              label="Nombre de la mascota"
+              value={formik.values.pet_name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.pet_name && Boolean(formik.errors.pet_name)}
+              helperText={formik.touched.pet_name && formik.errors.pet_name}
+              variant="outlined"
+            />
+            <TextField
+              fullWidth
+              id="pet_race"
+              name="pet_race"
+              label="Raza"
+              value={formik.values.pet_race}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.pet_race && Boolean(formik.errors.pet_race)}
+              helperText={formik.touched.pet_race && formik.errors.pet_race}
+              variant="outlined"
+            />
+            {/* TODO: make a dropdown */}
+            <TextField
+              fullWidth
+              id="pub_type"
+              name="pub_type"
+              label="Tipo de publicacion"
+              value={formik.values.pub_type}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.pub_type && Boolean(formik.errors.pub_type)}
+              helperText={formik.touched.pub_type && formik.errors.pub_type}
+              variant="outlined"
+            />
+            <div>
+              <Grid container spacing={2} alignItems="stretch">
+                <Grid item xs={8} sm={9} md={10}>
+                  <TextField
+                    fullWidth
+                    id="pet_location"
+                    name="pet_location"
+                    label="Ubicacion"
+                    value={formik.values.pet_location}
+                    onBlur={formik.handleBlur}
+                    error={
+                      formik.touched.pet_location &&
+                      Boolean(formik.errors.pet_location)
+                    }
+                    helperText={
+                      formik.touched.pet_location && formik.errors.pet_location
+                    }
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={4} sm={3} md={2}>
+                  <Button
+                    sx={{ height: "100%" }}
+                    fullWidth
+                    variant="outlined"
+                    onClick={handleOpenMap}
+                  >
+                    Elegir ubicacion
+                  </Button>
+                </Grid>
+              </Grid>
+              <Dialog
+                fullWidth
+                maxWidth="lg"
+                onClose={handleCloseMap}
+                open={mapOpen}
+              >
+                <DialogTitle>Ubicacion</DialogTitle>
+                <CustomMap
+                  getLocationCallback={getLocationCallback}
+                  isEdit={false}
+                />
+              </Dialog>
+            </div>
+            <TextField
+              multiline
+              rows={4}
+              fullWidth
+              id="description"
+              name="description"
+              label="Notas adicionales"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.description && Boolean(formik.errors.description)
+              }
+              helperText={
+                formik.touched.description && formik.errors.description
+              }
+              variant="outlined"
+            />
+            <div>
+              <Button type="submit" variant="outlined">
+                Crear
+              </Button>
+            </div>
+          </Box>
+        </div>
       </Container>
     </DashboardLayout>
   );
