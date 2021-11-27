@@ -4,20 +4,22 @@ import {
   Button,
   Container,
   Grid,
+  Box,
   IconButton,
   TextField,
-  Box,
+  Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
+import { PhotoCamera } from "@mui/icons-material";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
-import UserImage from "../../../assets/avatar.png";
 import { userProfileSchema } from "../../../utils/validationSchemas";
 import FormWrapper from "../../../components/Form/FormWrapper";
 import FilesService from "../../../services/files";
 import UserService from "../../../services/users";
 import { IUser } from "../../../types/User";
+import PhotoPreviewModal from "../../../components/ImagePreviewModal/ImagePreviewModal";
 
 const Profile: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -51,7 +53,6 @@ const Profile: React.FC = () => {
             variant: "success",
           });
           setCurrentUser(response.data as IUser);
-          formik.resetForm();
         }
       } catch (error) {
         enqueueSnackbar(
@@ -64,43 +65,113 @@ const Profile: React.FC = () => {
     },
   });
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image upload
+  const [selectedImage, setSelectedImage] = React.useState<File>();
+
+  const [selectedImagePreview, setSelectedImagePreview] =
+    React.useState<string>();
+
+  const handleImageSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const img = e.target.files?.[0];
-    console.log({ img });
     if (img != null) {
-      console.log("not null");
-      const formData = new FormData();
-      formData.append("files", img);
-      const response = await FilesService.upload(formData);
-      console.log({ response });
+      setSelectedImage(img);
     }
   };
+
+  const handleImageUpload = async () => {
+    const formData = new FormData();
+    formData.append("file", selectedImage as Blob);
+    formData.append("upload_preset", "c54c8msx");
+    const data = await FilesService.upload(formData);
+    // TODO: improve error handling here
+    if (data) {
+      // Update user's picPath
+      const updatedUser = await UserService.update({
+        ...currentUser!,
+        picPath: data.secure_url,
+      });
+      if (updatedUser) {
+        setCurrentUser(updatedUser.data as IUser);
+        enqueueSnackbar("Su foto de perfil fue actualizada con éxito", {
+          variant: "success",
+        });
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    if (!selectedImage) {
+      setSelectedImagePreview(undefined);
+      return;
+    }
+
+    const objectURL = URL.createObjectURL(selectedImage);
+    setSelectedImagePreview(objectURL);
+
+    // eslint-disable-next-line consistent-return
+    return () => URL.revokeObjectURL(objectURL);
+  }, [selectedImage]);
 
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
         <Grid container spacing={4}>
-          <Grid item xs={12} container justifyContent="center">
-            <label htmlFor="icon-button-file">
-              <input
-                accept="image/*"
-                id="icon-button-file"
-                type="file"
-                style={{ display: "none" }}
-                onChange={handleImageChange}
-              />
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="span"
-              >
-                <img
-                  src={UserImage}
-                  alt="User"
-                  style={{ display: "block", maxWidth: "160px" }}
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {selectedImagePreview && (
+                <PhotoPreviewModal
+                  image={selectedImagePreview}
+                  modalTitle="Modificar foto de perfil"
+                  onClose={handleImageUpload}
                 />
-              </IconButton>
-            </label>
+              )}
+              <div style={{ position: "relative" }}>
+                <img
+                  src={currentUser!.picPath}
+                  alt="Foto de perfil"
+                  style={{ display: "block", maxWidth: "140px" }}
+                />
+                <label
+                  title="Modificar foto de perfil"
+                  style={{
+                    position: "absolute",
+                    bottom: 0,
+                    right: 0,
+                    zIndex: 1,
+                    backgroundColor: "#ccc",
+                    opacity: 0.5,
+                    borderRadius: "100rem",
+                  }}
+                >
+                  <input
+                    accept="image/*"
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={handleImageSelection}
+                  />
+                  <IconButton
+                    color="primary"
+                    aria-label="upload picture"
+                    component="span"
+                  >
+                    <PhotoCamera />
+                  </IconButton>
+                </label>
+              </div>
+              <div>
+                {/* TODO: crashing when refreshing page because of this */}
+                <Typography>
+                  {`${currentUser!.names}
+                  ${currentUser!.surnames}`}
+                </Typography>
+              </div>
+            </Box>
           </Grid>
           <Grid item xs={12}>
             <FormWrapper onSubmit={formik.handleSubmit}>
@@ -116,7 +187,6 @@ const Profile: React.FC = () => {
                 helperText={formik.touched.address && formik.errors.address}
                 variant="outlined"
               />
-              {/* TODO: make a dropdown? */}
               <TextField
                 fullWidth
                 id="province"
@@ -131,7 +201,6 @@ const Profile: React.FC = () => {
                 helperText={formik.touched.province && formik.errors.province}
                 variant="outlined"
               />
-              {/* TODO: make a dropdown? */}
               <TextField
                 fullWidth
                 id="city"

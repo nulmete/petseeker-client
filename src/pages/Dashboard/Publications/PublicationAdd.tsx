@@ -12,11 +12,13 @@ import {
 import React from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import { useHistory } from "react-router-dom";
 import PublicationService from "../../../services/publications";
-import CustomMap from "../../../components/CurrentLocation/CustomMap";
+import CustomMap from "../../../components/CustomMap/CustomMap";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
 import PageHeader from "../../../components/Typography/PageHeader";
+import { IPublication } from "../../../types/Publication";
 
 const validationSchema = yup.object({
   title: yup
@@ -42,6 +44,7 @@ const validationSchema = yup.object({
 
 const PublicationAdd: React.FC = () => {
   const { currentUser } = useUserContext();
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
@@ -66,17 +69,24 @@ const PublicationAdd: React.FC = () => {
     validationSchema,
     onSubmit: async (values) => {
       // TODO: handle image upload
-      await PublicationService.add({
-        ...values,
-        pet_pic_url: [],
-      });
+      try {
+        const response = await PublicationService.add({
+          ...values,
+          // TODO: pet pic url
+          pet_pic_url: [],
+        });
 
-      // TODO: handle errors
-
-      // TODO: if there aren't errors, go to the
-      // detail page of the created publication
-
-      formik.resetForm();
+        // Should be status 200...
+        if (response.status === 202) {
+          const publicationData = response.data as IPublication;
+          history.push(
+            `/dashboard/publicaciones/${publicationData.publication_id}`
+          );
+        }
+      } catch (error) {
+        // TODO: handle errors
+        console.error({ error });
+      }
     },
   });
 
@@ -195,10 +205,7 @@ const PublicationAdd: React.FC = () => {
                 open={mapOpen}
               >
                 <DialogTitle>Ubicacion</DialogTitle>
-                <CustomMap
-                  getLocationCallback={getLocationCallback}
-                  isEdit={false}
-                />
+                <CustomMap getLocationCallback={getLocationCallback} />
               </Dialog>
             </div>
             <TextField

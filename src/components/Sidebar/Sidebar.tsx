@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -54,9 +53,7 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
             </Button>
           </ListItem>
         ))}
-        {/* Additional ListItem for logging out */}
-        <ListItem>
-          {/* TODO: improve styling */}
+        <ListItem disableGutters>
           <LogoutButton />
         </ListItem>
       </List>

@@ -11,7 +11,7 @@ import { useUserContext } from "../../../context/sessionContext";
 import PageHeader from "../../../components/Typography/PageHeader";
 import SectionHeader from "../../../components/Typography/SectionHeader";
 import Comment from "../../../components/Comment/Comment";
-import CustomMap from "../../../components/CurrentLocation/CustomMap";
+import CustomMap from "../../../components/CustomMap/CustomMap";
 
 const validationSchema = yup.object({
   comment: yup.string().required("Requerido."),
@@ -27,6 +27,7 @@ const PublicationDetail: React.FC = () => {
   const params = useParams<ParamTypes>();
 
   const [publication, setPublication] = React.useState<IPublication>();
+  const [isMapEnabled, setIsMapEnabled] = React.useState<boolean>(false);
 
   const getPublication = async () => {
     const response = await PublicationService.getById(params.id);
@@ -36,6 +37,16 @@ const PublicationDetail: React.FC = () => {
   React.useEffect(() => {
     getPublication();
   }, []);
+
+  const getInitialPos = React.useCallback(() => {
+    if (!publication) return undefined;
+    const { pet_location: petLocation } = publication;
+    const splittedPetLocation = petLocation.split(",");
+    return {
+      lat: +splittedPetLocation[0],
+      lng: +splittedPetLocation[1],
+    };
+  }, [publication]);
 
   const formik = useFormik({
     initialValues: {
@@ -58,6 +69,12 @@ const PublicationDetail: React.FC = () => {
     },
   });
 
+  const enableMapInteraction = () => {
+    setIsMapEnabled(true);
+  };
+
+  if (!publication && !getInitialPos()) return <div>Loading...</div>;
+
   return (
     <DashboardLayout>
       <Container maxWidth="xl">
@@ -76,11 +93,17 @@ const PublicationDetail: React.FC = () => {
 
           {/* TODO: map con marcadores */}
           <section>
+            <SectionHeader>Avistamientos</SectionHeader>
+            <button type="button" onClick={enableMapInteraction}>
+              {isMapEnabled ? "disable" : "enable"}
+            </button>
             <CustomMap
-              getLocationCallback={() => {
-                console.log("callback");
+              getLocationCallback={(location) => {
+                console.log("callback", location);
               }}
               isEdit
+              initialPos={getInitialPos()}
+              isEnabled={isMapEnabled}
             />
           </section>
 

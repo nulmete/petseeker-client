@@ -4,12 +4,16 @@ import { Button } from "@mui/material";
 
 interface Props {
   getLocationCallback: (location: string) => void;
-  isEdit: boolean;
+  isEdit?: boolean;
+  initialPos?: google.maps.LatLngLiteral;
+  isEnabled?: boolean;
 }
 
 const CustomMap: React.FC<Props> = ({
   getLocationCallback,
   isEdit = false,
+  initialPos = undefined,
+  isEnabled = true,
 }) => {
   // Load the map
   const { isLoaded } = useJsApiLoader({
@@ -26,6 +30,7 @@ const CustomMap: React.FC<Props> = ({
   const mapRef = React.useRef<google.maps.Map | null>(null);
 
   const onMapClick = (e: google.maps.MapMouseEvent) => {
+    if (!isEnabled) return;
     if (e.latLng !== null) {
       const latitude = e.latLng.lat();
       const longitude = e.latLng.lng();
@@ -39,11 +44,14 @@ const CustomMap: React.FC<Props> = ({
           const clickedPosCopy = [...clickedPos];
           clickedPosCopy.splice(1, 1);
           setClickedPos(clickedPosCopy);
+          console.log("xd");
         }
         setClickedPos((current) => [
           ...current,
           { lat: latitude, lng: longitude },
         ]);
+        console.log("open modal ehre");
+        getLocationCallback("some location");
       }
     }
   };
@@ -67,8 +75,17 @@ const CustomMap: React.FC<Props> = ({
 
   const onLoad = (map: google.maps.Map): void => {
     mapRef.current = map;
-    // move to user's location
     handleGetMyLocation();
+  };
+
+  const onLoadEdit = (map: google.maps.Map): void => {
+    mapRef.current = map;
+    return navigator.geolocation.getCurrentPosition((position) => {
+      moveTo({
+        lat: initialPos!.lat,
+        lng: initialPos!.lng,
+      });
+    });
   };
 
   const onUnMount = (): void => {
@@ -91,14 +108,14 @@ const CustomMap: React.FC<Props> = ({
       <GoogleMap
         mapContainerStyle={{
           width: "100%",
-          height: "100vh",
+          height: "60vh",
         }}
         options={{
           disableDefaultUI: true,
           zoomControl: true,
         }}
         zoom={14}
-        onLoad={onLoad}
+        onLoad={!isEdit ? onLoad : onLoadEdit}
         onUnmount={onUnMount}
         onClick={onMapClick}
       >
@@ -117,11 +134,24 @@ const CustomMap: React.FC<Props> = ({
                 : undefined
             }
             position={pos}
+            // TODO: con esto podria pedir un marker en el back
+            // y mostrar las "notas adicionales"
+            onClick={(e) => {
+              const lat = e.latLng?.lat();
+              const lng = e.latLng?.lng();
+              alert(`lat: ${lat} - lng: ${lng}`);
+            }}
           />
         ))}
       </GoogleMap>
     </>
   );
+};
+
+CustomMap.defaultProps = {
+  isEdit: false,
+  initialPos: undefined,
+  isEnabled: true,
 };
 
 export default CustomMap;
