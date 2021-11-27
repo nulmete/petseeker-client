@@ -16,6 +16,7 @@ const upload = async (data: any): Promise<CloudinaryUploadResponse | null> => {
     "https://api.cloudinary.com/v1_1/dq6tb1lgp/image/upload",
     data
   );
+  console.log({ response });
   if (response && isCloudinaryUploadResponse(response.data)) {
     return response.data;
   }

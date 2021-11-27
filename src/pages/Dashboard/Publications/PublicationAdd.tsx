@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   Box,
@@ -6,19 +7,24 @@ import {
   Dialog,
   DialogTitle,
   Grid,
+  IconButton,
+  Paper,
   TextField,
   Theme,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
+import { AddAPhoto } from "@mui/icons-material";
 import PublicationService from "../../../services/publications";
 import CustomMap from "../../../components/CustomMap/CustomMap";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
 import PageHeader from "../../../components/Typography/PageHeader";
 import { IPublication } from "../../../types/Publication";
+import FilesService from "../../../services/files";
 
 const validationSchema = yup.object({
   title: yup
@@ -46,6 +52,11 @@ const PublicationAdd: React.FC = () => {
   const { currentUser } = useUserContext();
   const history = useHistory();
 
+  // Image upload
+  const [selectedImages, setSelectedImages] = React.useState<
+    { preview: string; image: File }[]
+  >([]);
+
   const formik = useFormik({
     initialValues: {
       // esto no esta en los campos del caso de uso
@@ -68,12 +79,26 @@ const PublicationAdd: React.FC = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      const images: string[] = [];
       // TODO: handle image upload
       try {
+        if (selectedImages.length > 0) {
+          const uploaders = selectedImages.map((image) => {
+            const formData = new FormData();
+            formData.append("file", image.image as Blob);
+            formData.append("upload_preset", "c54c8msx");
+            return FilesService.upload(formData);
+          });
+
+          await Promise.all(uploaders).then((res) => {
+            const allURLs = res.map((r) => r!.secure_url);
+            images.push(...allURLs);
+          });
+        }
+
         const response = await PublicationService.add({
           ...values,
-          // TODO: pet pic url
-          pet_pic_url: [],
+          pet_pic_url: images,
         });
 
         // Should be status 200...
@@ -102,6 +127,19 @@ const PublicationAdd: React.FC = () => {
 
   const getLocationCallback = (location: string): void => {
     formik.setFieldValue("pet_location", location);
+  };
+
+  const handleImageSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const images = e.target.files;
+    // TODO: validate max 5 images here?
+    if (images && images.length > 0) {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < images.length; i++) {
+        const preview = URL.createObjectURL(images[i]);
+        const imageWithPreview = { preview, image: images[i] };
+        setSelectedImages((current) => [...current, imageWithPreview]);
+      }
+    }
   };
 
   return (
@@ -226,6 +264,56 @@ const PublicationAdd: React.FC = () => {
               }
               variant="outlined"
             />
+            <label htmlFor="images" style={{ display: "inline-block" }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography>Imagenes</Typography>
+                <IconButton
+                  color="primary"
+                  aria-label="Agregar imagenes"
+                  component="span"
+                >
+                  <AddAPhoto />
+                </IconButton>
+              </Box>
+              <input
+                id="images"
+                style={{ display: "none" }}
+                accept="image/*"
+                type="file"
+                multiple
+                onChange={handleImageSelection}
+              />
+            </label>
+            {/* Images - min: 1 - max: 5 */}
+            <Paper variant="outlined" elevation={2}>
+              {selectedImages.length > 0 ? (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  {selectedImages.map((image) => (
+                    <div style={{ position: "relative" }}>
+                      <img
+                        src={image.preview}
+                        alt=""
+                        style={{ display: "block", maxHeight: "150px" }}
+                      />
+                      <button
+                        style={{ position: "absolute", top: 0, right: 0 }}
+                        type="button"
+                        onClick={() => {
+                          setSelectedImages((prev) =>
+                            prev.filter((x) => x.preview !== image.preview)
+                          );
+                        }}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </Box>
+              ) : (
+                // TODO styling with minHeight
+                "No seleccionaste ninguna imagen."
+              )}
+            </Paper>
             <div>
               <Button type="submit" variant="outlined">
                 Crear

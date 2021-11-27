@@ -22,8 +22,6 @@ interface ParamTypes {
 }
 
 const PublicationDetail: React.FC = () => {
-  const { currentUser } = useUserContext();
-
   const params = useParams<ParamTypes>();
 
   const [publication, setPublication] = React.useState<IPublication>();
