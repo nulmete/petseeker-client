@@ -7,36 +7,30 @@ import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-
-// Testing purposes
-import Dog from "../../assets/dog.jpg";
 import { IPublication } from "../../types/Publication";
+import ImageNotFound from "../../assets/imageNotFound.png";
 
 interface Props {
   publication: IPublication;
-  handlePublicationDelete: () => Promise<void>;
   handlePublicationDetail: () => void;
 }
 
 const Publication: React.FC<Props> = ({
   publication,
-  handlePublicationDelete,
   handlePublicationDetail,
 }) => {
-  const { pet_name, pub_type } = publication;
+  const { author_name, pet_name, pub_type, pet_pic_url } = publication;
+  const imageToShow = pet_pic_url.length > 0 ? pet_pic_url[0] : ImageNotFound;
+
   return (
     <Card onClick={handlePublicationDetail} sx={{ cursor: "pointer" }}>
       <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            U
-          </Avatar>
-        }
-        title="Username"
+        avatar={<Avatar sx={{ bgcolor: red[500] }}>U</Avatar>}
+        title={author_name}
+        // TODO: falta timestamp
         subheader="September 14, 2016"
       />
-      {/* TODO: figure out responsive height */}
-      <CardMedia component="img" height="220" image={Dog} alt="Dog" />
+      <CardMedia component="img" height="220" image={imageToShow} alt="Dog" />
       <CardContent>
         <Typography variant="body2" color="text.secondary">
           {pet_name || "Sin nombre"}
@@ -45,6 +39,7 @@ const Publication: React.FC<Props> = ({
           {pub_type}
         </Typography>
         <Typography variant="body2" color="text.secondary">
+          {/* TODO: calcular */}
           Distancia mascota - usuario
         </Typography>
       </CardContent>

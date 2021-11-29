@@ -1,11 +1,13 @@
 import React from "react";
 import { useFormik } from "formik";
-import { Container, TextField, Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import UserService from "../services/users";
 import { userOnboardingSchema } from "../utils/validationSchemas";
 import FormWrapper from "../components/Form/FormWrapper";
 import PageHeader from "../components/Typography/PageHeader";
+import PageContainer from "../components/PageContainer/PageContainer";
 
 interface ParamTypes {
   id: string;
@@ -13,6 +15,7 @@ interface ParamTypes {
 
 const Onboarding: React.FC = () => {
   const { id: auth0Id } = useParams<ParamTypes>();
+  const { enqueueSnackbar } = useSnackbar();
 
   const continueAuth = async () => {
     const auth0Domain = process.env.REACT_APP_AUTH0_DOMAIN;
@@ -33,16 +36,18 @@ const Onboarding: React.FC = () => {
     },
     validationSchema: userOnboardingSchema,
     onSubmit: async (values) => {
-      // TODO: hardcoding email and picPath because backend needs them
+      // Sending email and picPath as empty since backend needs them
       const response = await UserService.create({
         ...values,
         uuid: auth0Id,
-        email: "fake@email.com",
-        picPath: "somePath",
+        email: "",
+        picPath: "",
       });
 
       if (response.status !== 201) {
-        alert("Something went wrong.");
+        enqueueSnackbar("Error al completar el perfil. Intente nuevamente.", {
+          variant: "error",
+        });
         return;
       }
 
@@ -51,7 +56,7 @@ const Onboarding: React.FC = () => {
   });
 
   return (
-    <Container maxWidth="xl" sx={{ padding: "2rem" }}>
+    <PageContainer>
       <div className="spacing-sm">
         <PageHeader>Completar Perfil</PageHeader>
         <FormWrapper onSubmit={formik.handleSubmit}>
@@ -83,7 +88,7 @@ const Onboarding: React.FC = () => {
             fullWidth
             id="address"
             name="address"
-            label="Direccion"
+            label="Dirección"
             value={formik.values.address}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -91,7 +96,6 @@ const Onboarding: React.FC = () => {
             helperText={formik.touched.address && formik.errors.address}
             variant="outlined"
           />
-          {/* TODO: make a dropdown? */}
           <TextField
             fullWidth
             id="province"
@@ -104,7 +108,6 @@ const Onboarding: React.FC = () => {
             helperText={formik.touched.province && formik.errors.province}
             variant="outlined"
           />
-          {/* TODO: make a dropdown? */}
           <TextField
             fullWidth
             id="city"
@@ -121,7 +124,7 @@ const Onboarding: React.FC = () => {
             fullWidth
             id="postalCode"
             name="postalCode"
-            label="Codigo Postal"
+            label="Código Postal"
             value={formik.values.postalCode}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -135,7 +138,7 @@ const Onboarding: React.FC = () => {
             fullWidth
             id="phoneNum"
             name="phoneNum"
-            label="Telefono"
+            label="Teléfono"
             value={formik.values.phoneNum}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -150,7 +153,7 @@ const Onboarding: React.FC = () => {
           </div>
         </FormWrapper>
       </div>
-    </Container>
+    </PageContainer>
   );
 };
 

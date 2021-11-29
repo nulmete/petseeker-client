@@ -2,12 +2,13 @@
 import React from "react";
 import {
   Button,
-  Container,
   Grid,
   Box,
   IconButton,
   TextField,
   Typography,
+  Avatar,
+  Theme,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
@@ -19,7 +20,9 @@ import FormWrapper from "../../../components/Form/FormWrapper";
 import FilesService from "../../../services/files";
 import UserService from "../../../services/users";
 import { IUser } from "../../../types/User";
-import PhotoPreviewModal from "../../../components/ImagePreviewModal/ImagePreviewModal";
+import ImagePreviewModal from "../../../components/ImagePreviewModal/ImagePreviewModal";
+import PageContainer from "../../../components/PageContainer/PageContainer";
+import ImageNotFound from "../../../assets/imageNotFound.png";
 
 const Profile: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -114,7 +117,7 @@ const Profile: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Container maxWidth="xl">
+      <PageContainer>
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Box
@@ -122,31 +125,41 @@ const Profile: React.FC = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                gap: 2,
               }}
             >
               {selectedImagePreview && (
-                <PhotoPreviewModal
+                <ImagePreviewModal
                   image={selectedImagePreview}
                   modalTitle="Modificar foto de perfil"
                   onClose={handleImageUpload}
                 />
               )}
-              <div style={{ position: "relative" }}>
-                <img
-                  src={currentUser!.picPath}
+              <div
+                style={{
+                  position: "relative",
+                }}
+              >
+                <Avatar
+                  src={currentUser?.picPath || ImageNotFound}
                   alt="Foto de perfil"
-                  style={{ display: "block", maxWidth: "140px" }}
+                  sx={{
+                    height: "240px",
+                    width: "100%",
+                    borderRadius: "50%",
+                    border: (theme: Theme) =>
+                      `1px solid ${theme.palette.primary.light}`,
+                  }}
                 />
                 <label
                   title="Modificar foto de perfil"
                   style={{
                     position: "absolute",
-                    bottom: 0,
-                    right: 0,
+                    transform: "translate(-50%, -50%)",
+                    bottom: "-2%",
+                    right: "-2%",
                     zIndex: 1,
-                    backgroundColor: "#ccc",
-                    opacity: 0.5,
-                    borderRadius: "100rem",
+                    borderRadius: "50%",
                   }}
                 >
                   <input
@@ -156,19 +169,24 @@ const Profile: React.FC = () => {
                     onChange={handleImageSelection}
                   />
                   <IconButton
-                    color="primary"
-                    aria-label="upload picture"
+                    aria-label="Modificar foto de perfil"
                     component="span"
+                    sx={{
+                      color: "#fff",
+                      bgcolor: "primary.main",
+                      "&:hover, &:active": {
+                        bgcolor: "primary.main",
+                      },
+                    }}
                   >
                     <PhotoCamera />
                   </IconButton>
                 </label>
               </div>
               <div>
-                {/* TODO: crashing when refreshing page because of this */}
                 <Typography>
-                  {`${currentUser!.names}
-                  ${currentUser!.surnames}`}
+                  {`${currentUser?.names}
+                  ${currentUser?.surnames}`}
                 </Typography>
               </div>
             </Box>
@@ -254,6 +272,7 @@ const Profile: React.FC = () => {
                 <Button
                   type="button"
                   variant="outlined"
+                  disabled={!formik.dirty}
                   onClick={formik.handleReset}
                 >
                   Cancelar
@@ -262,7 +281,7 @@ const Profile: React.FC = () => {
             </FormWrapper>
           </Grid>
         </Grid>
-      </Container>
+      </PageContainer>
     </DashboardLayout>
   );
 };

@@ -2,15 +2,15 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
+import { ButtonProps } from "@mui/material";
 
-interface Props {
+interface Props extends ButtonProps {
   entity: string;
-  onClick: () => void;
 }
 
-const ButtonAdd: React.FC<Props> = ({ entity, onClick }) => {
+const ButtonAdd: React.FC<Props> = ({ entity, ...props }) => {
   return (
-    <Button variant="contained" startIcon={<AddIcon />} onClick={onClick}>
+    <Button variant="contained" startIcon={<AddIcon />} {...props}>
       Agregar {entity}
     </Button>
   );

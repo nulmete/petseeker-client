@@ -43,3 +43,25 @@ export const userProfileSchema = yup.object({
     .matches(/^\d+$/, "Solo debe contener numeros.")
     .required("Requerido."),
 });
+
+export const publicationSchema = yup.object({
+  title: yup
+    .string()
+    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .required("Requerido."),
+  pet_name: yup
+    .string()
+    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
+    .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
+    .required("Requerido."),
+  // TODO: validate is one of dropdown values
+  pet_race: yup.string().required("Requerido."),
+  pet_location: yup.string().required("Requerido."),
+  // TODO: validate is one of dropdown values
+  pub_type: yup.string().required("Requerido."),
+  description: yup
+    .string()
+    .min(10, "Debe tener una longitud de entre 10 y 3000 caracteres.")
+    .max(3000, "Debe tener una longitud de entre 10 y 3000 caracteres."),
+});

@@ -5,11 +5,11 @@ import { ThemeProvider } from "@emotion/react";
 import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import reportWebVitals from "./reportWebVitals";
+import Auth0ProviderWithHistory from "./auth/auth0-provider-with-history";
+import { UserStateProvider } from "./context/sessionContext";
 import App from "./App";
 import theme from "./theme/theme";
-import Auth0ProviderWithHistory from "./auth/auth0-provider-with-history";
 import "./index.css";
-import { UserStateProvider } from "./context/sessionContext";
 
 ReactDOM.render(
   <React.StrictMode>

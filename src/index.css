@@ -31,5 +31,5 @@
 }
 
 .spacing-lg > * + * {
-  margin-top: 2rem !important;
+  margin-top: 2.5rem !important;
 }

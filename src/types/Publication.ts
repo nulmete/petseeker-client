@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 export interface IComment {
-  author_id: number;
+  author_uuid: string;
   author_name: string;
   content: string;
   created_date: string;
@@ -8,17 +8,18 @@ export interface IComment {
 }
 
 export interface ISighting {
-  authorId: number;
-  authorName: string;
+  author_uuid: string;
+  author_name: string;
+  content: string;
   location: string;
-  publicationId: number;
+  publication_id: number;
   timestamp: string;
 }
 
 export interface IPublication {
-  // publication_id will be undefined when adding a publication
+  title: string;
   publication_id?: number;
-  author_id: number;
+  author_id: string;
   author_name: string;
   pet_location: string;
   pet_name: string;
