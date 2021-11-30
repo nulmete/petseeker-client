@@ -8,10 +8,11 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { Link as RouterLink } from "react-router-dom";
 import Button from "@mui/material/Button";
 import LogoutButton from "../Auth/LogoutButton";
+import PetSeeker from "../../assets/petseeker.png";
+import Patita from "../../assets/patita.png";
 
 const sections = [
   {
@@ -37,7 +38,13 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
 
   const drawer = (
     <div>
-      <Toolbar />
+      <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
+        <img
+          src={PetSeeker}
+          alt="PetSeeker"
+          style={{ maxWidth: "140px", display: "block" }}
+        />
+      </Toolbar>
       <Divider />
       <List>
         {sections.map(({ title, path }) => (
@@ -67,6 +74,7 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
+          bgcolor: "primary.main",
         }}
       >
         <Toolbar>
@@ -79,15 +87,24 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            PetSeeker
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <div>
+              <img
+                src={PetSeeker}
+                style={{ display: "block", height: "35px" }}
+                alt=""
+              />
+            </div>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box
         component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
-        aria-label="mailbox folders"
+        sx={{
+          width: { md: drawerWidth },
+          flexShrink: { md: 0 },
+          background: "red",
+        }}
       >
         <Drawer
           variant="temporary"
@@ -101,6 +118,7 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              bgcolor: "secondary.main",
             },
           }}
         >
@@ -113,6 +131,7 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
+              bgcolor: "secondary.main",
             },
           }}
           open

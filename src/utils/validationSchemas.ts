@@ -62,6 +62,7 @@ export const publicationSchema = yup.object({
   pub_type: yup.string().required("Requerido."),
   description: yup
     .string()
+    .required("Requerido.")
     .min(10, "Debe tener una longitud de entre 10 y 3000 caracteres.")
     .max(3000, "Debe tener una longitud de entre 10 y 3000 caracteres."),
 });

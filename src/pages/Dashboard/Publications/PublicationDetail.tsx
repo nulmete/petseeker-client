@@ -50,6 +50,8 @@ const PublicationDetail: React.FC = () => {
     [] as ClickedPosition[]
   );
 
+  const [selectedSighting, setSelectedSighting] = React.useState<string>();
+
   const [publication, setPublication] = React.useState<IPublication>();
 
   const initialize = () => {
@@ -116,7 +118,8 @@ const PublicationDetail: React.FC = () => {
         publication_id: +params.id,
         timestamp: new Date().toISOString(),
       };
-      await SightingsService.add(data);
+      const response = await SightingsService.add(data);
+      console.log({ response });
       formik2.resetForm();
       await initialize();
     },
@@ -135,6 +138,20 @@ const PublicationDetail: React.FC = () => {
       formik2.setFieldValue("location", serializeLocation(position));
       setIsMapEnabled(false);
       setIsAddingSighting(true);
+    }
+  };
+
+  const onMarkerClick = (e: google.maps.MapMouseEvent) => {
+    if (e.latLng !== null) {
+      const lat = e.latLng.lat();
+      const lng = e.latLng.lng();
+      const stringifiedLocation = serializeLocation({ lat, lng });
+      const sightings = publication?.sightings.filter((s) => {
+        return s.location === stringifiedLocation;
+      });
+      if (sightings && sightings.length > 0) {
+        setSelectedSighting(sightings[0].content);
+      }
     }
   };
 
@@ -206,7 +223,7 @@ const PublicationDetail: React.FC = () => {
 
           <section className="spacing-sm">
             <SectionHeader>Datos de la mascota</SectionHeader>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <div className="spacing-sm">
               <Paper
                 variant="elevation"
                 elevation={2}
@@ -241,7 +258,18 @@ const PublicationDetail: React.FC = () => {
                 <Typography>Nombre: {publication?.pet_name}</Typography>
                 <Typography>Raza: {publication?.pet_race}</Typography>
               </div>
-            </Box>
+            </div>
+          </section>
+
+          <section className="spacing-sm">
+            <SectionHeader>Dueño de la mascota</SectionHeader>
+            <div>
+              <Typography>
+                Nombre y apellido: {publication?.author_name}
+              </Typography>
+              {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phoneNum */}
+              <Typography>Telefono: {123456}</Typography>
+            </div>
           </section>
 
           <section className="spacing-sm">
@@ -263,6 +291,7 @@ const PublicationDetail: React.FC = () => {
               isEdit
               onMapClick={onMapClick}
               initialClickedPositions={clickedPos}
+              onMarkerClick={onMarkerClick}
             />
             {isAddingSighting && (
               <ConfirmationModal
@@ -296,6 +325,19 @@ const PublicationDetail: React.FC = () => {
                   }
                   variant="standard"
                 />
+              </ConfirmationModal>
+            )}
+            {selectedSighting && (
+              <ConfirmationModal
+                title="Notas adicionales"
+                onClose={() => {
+                  setSelectedSighting(undefined);
+                }}
+                onConfirm={() => {
+                  setSelectedSighting(undefined);
+                }}
+              >
+                <Typography>{selectedSighting}</Typography>
               </ConfirmationModal>
             )}
           </section>
@@ -355,17 +397,6 @@ const PublicationDetail: React.FC = () => {
                 />
               </Box>
             </Paper>
-          </section>
-
-          <section className="spacing-sm">
-            <SectionHeader>Dueño de la publicación</SectionHeader>
-            <div>
-              <Typography>
-                Nombre y apellido: {publication?.author_name}
-              </Typography>
-              {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phoneNum */}
-              <Typography>Telefono: {123456}</Typography>
-            </div>
           </section>
         </div>
       </PageContainer>

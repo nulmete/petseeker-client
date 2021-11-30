@@ -9,12 +9,14 @@ interface Props {
   isEdit?: boolean;
   initialClickedPositions: ClickedPosition[];
   onMapClick: (e: google.maps.MapMouseEvent) => void;
+  onMarkerClick?: (e: google.maps.MapMouseEvent) => void;
 }
 
 const CustomMap: React.FC<Props> = ({
   isEdit = false,
   initialClickedPositions,
   onMapClick,
+  onMarkerClick = () => null,
 }) => {
   // Load the map
   const { isLoaded } = useJsApiLoader({
@@ -78,7 +80,7 @@ const CustomMap: React.FC<Props> = ({
           disableDefaultUI: true,
           zoomControl: true,
         }}
-        zoom={14}
+        zoom={12}
         onLoad={!isEdit ? onLoad : onLoadEdit}
         onUnmount={onUnMount}
         onClick={onMapClick}
@@ -95,13 +97,7 @@ const CustomMap: React.FC<Props> = ({
                 : undefined
             }
             position={pos.position}
-            // TODO: con esto podria pedir un marker en el back
-            // y mostrar las "notas adicionales"
-            onClick={(e) => {
-              const lat = e.latLng?.lat();
-              const lng = e.latLng?.lng();
-              alert(`lat: ${lat} - lng: ${lng}`);
-            }}
+            onClick={onMarkerClick}
           />
         ))}
       </GoogleMap>
@@ -111,6 +107,7 @@ const CustomMap: React.FC<Props> = ({
 
 CustomMap.defaultProps = {
   isEdit: false,
+  onMarkerClick: () => null,
 };
 
 export default CustomMap;

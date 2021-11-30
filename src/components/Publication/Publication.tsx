@@ -12,19 +12,26 @@ import ImageNotFound from "../../assets/imageNotFound.png";
 
 interface Props {
   publication: IPublication;
+  distance: number;
   handlePublicationDetail: () => void;
 }
 
 const Publication: React.FC<Props> = ({
   publication,
+  distance,
   handlePublicationDetail,
 }) => {
   const { author_name, pet_name, pub_type, pet_pic_url } = publication;
   const imageToShow = pet_pic_url.length > 0 ? pet_pic_url[0] : ImageNotFound;
 
   return (
-    <Card onClick={handlePublicationDetail} sx={{ cursor: "pointer" }}>
+    <Card
+      elevation={6}
+      onClick={handlePublicationDetail}
+      sx={{ cursor: "pointer" }}
+    >
       <CardHeader
+        sx={{ bgcolor: "secondary.main" }}
         avatar={<Avatar sx={{ bgcolor: red[500] }}>U</Avatar>}
         title={author_name}
         // TODO: falta timestamp
@@ -32,15 +39,14 @@ const Publication: React.FC<Props> = ({
       />
       <CardMedia component="img" height="220" image={imageToShow} alt="Dog" />
       <CardContent>
+        <Typography variant="body2" color="text.secondary" fontWeight="bold">
+          {pub_type}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {pet_name || "Sin nombre"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {pub_type}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {/* TODO: calcular */}
-          Distancia mascota - usuario
+          Distancia: {distance} km
         </Typography>
       </CardContent>
     </Card>

@@ -10,6 +10,7 @@ import { UserStateProvider } from "./context/sessionContext";
 import App from "./App";
 import theme from "./theme/theme";
 import "./index.css";
+import { LocationStateProvider } from "./context/locationContext";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -19,7 +20,9 @@ ReactDOM.render(
           <Auth0ProviderWithHistory>
             <CssBaseline />
             <UserStateProvider>
-              <App />
+              <LocationStateProvider>
+                <App />
+              </LocationStateProvider>
             </UserStateProvider>
           </Auth0ProviderWithHistory>
         </BrowserRouter>

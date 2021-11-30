@@ -1,18 +1,23 @@
-import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 const theme = createTheme({
+  typography: {
+    fontFamily: ["Montserrat", '"Helvetica Neue"', "Arial", "sans-serif"].join(
+      ","
+    ),
+  },
   palette: {
     primary: {
-      main: "#556cd6",
+      // rojo
+      main: "#d36353",
     },
     secondary: {
-      main: "#19857b",
-    },
-    error: {
-      main: red.A400,
+      // amarillo
+      main: "#f2efe6",
     },
   },
 });
 
-export default theme;
+const responsiveTheme = responsiveFontSizes(theme);
+
+export default responsiveTheme;

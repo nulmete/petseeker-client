@@ -11,7 +11,7 @@ interface Props {
 
 const Comment: React.FC<Props> = ({ isOwner, authorName, date, content }) => {
   return (
-    <Paper variant="outlined" sx={{ padding: 2 }}>
+    <Paper variant="outlined" sx={{ padding: 2, bgcolor: "secondary.main" }}>
       <Grid container spacing={1}>
         <Grid item container xs={12} alignItems="center">
           <Grid item>

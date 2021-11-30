@@ -5,7 +5,6 @@ import {
   Button,
   IconButton,
   Paper,
-  TextField,
   Theme,
   Typography,
 } from "@mui/material";
@@ -25,6 +24,7 @@ import { serializeLocation } from "../../../utils/locationParser";
 import { publicationSchema } from "../../../utils/validationSchemas";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import { ClickedPosition } from "../../../types/ClickedPosition";
+import TextInput from "../../../components/Input/TextInput";
 
 const PublicationAdd: React.FC = () => {
   const { currentUser } = useUserContext();
@@ -126,8 +126,7 @@ const PublicationAdd: React.FC = () => {
               },
             }}
           >
-            <TextField
-              fullWidth
+            <TextInput
               id="title"
               name="title"
               label="Título"
@@ -136,10 +135,8 @@ const PublicationAdd: React.FC = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.title && Boolean(formik.errors.title)}
               helperText={formik.touched.title && formik.errors.title}
-              variant="outlined"
             />
-            <TextField
-              fullWidth
+            <TextInput
               id="pet_name"
               name="pet_name"
               label="Nombre de la mascota"
@@ -148,23 +145,19 @@ const PublicationAdd: React.FC = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.pet_name && Boolean(formik.errors.pet_name)}
               helperText={formik.touched.pet_name && formik.errors.pet_name}
-              variant="outlined"
             />
-            <TextField
-              fullWidth
+            <TextInput
               id="pet_race"
               name="pet_race"
-              label="Raza"
+              label="Raza de la mascota"
               value={formik.values.pet_race}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.pet_race && Boolean(formik.errors.pet_race)}
               helperText={formik.touched.pet_race && formik.errors.pet_race}
-              variant="outlined"
             />
             {/* TODO: make a dropdown */}
-            <TextField
-              fullWidth
+            <TextInput
               id="pub_type"
               name="pub_type"
               label="Tipo de publicación"
@@ -173,7 +166,6 @@ const PublicationAdd: React.FC = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.pub_type && Boolean(formik.errors.pub_type)}
               helperText={formik.touched.pub_type && formik.errors.pub_type}
-              variant="outlined"
             />
             <div>
               <Typography>Ubicación</Typography>
@@ -182,10 +174,9 @@ const PublicationAdd: React.FC = () => {
                 initialClickedPositions={[clickedPos]}
               />
             </div>
-            <TextField
+            <TextInput
               multiline
               rows={4}
-              fullWidth
               id="description"
               name="description"
               label="Notas adicionales"
@@ -199,7 +190,6 @@ const PublicationAdd: React.FC = () => {
               helperText={
                 formik.touched.description && formik.errors.description
               }
-              variant="outlined"
             />
             <label htmlFor="images" style={{ display: "inline-block" }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -253,7 +243,7 @@ const PublicationAdd: React.FC = () => {
               <Typography>No seleccionaste ninguna imagen.</Typography>
             )}
             <div>
-              <Button type="submit" variant="outlined">
+              <Button type="submit" variant="contained">
                 Crear
               </Button>
             </div>

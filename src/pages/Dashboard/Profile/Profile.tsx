@@ -5,7 +5,6 @@ import {
   Grid,
   Box,
   IconButton,
-  TextField,
   Typography,
   Avatar,
   Theme,
@@ -23,6 +22,7 @@ import { IUser } from "../../../types/User";
 import ImagePreviewModal from "../../../components/ImagePreviewModal/ImagePreviewModal";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import ImageNotFound from "../../../assets/imageNotFound.png";
+import TextInput from "../../../components/Input/TextInput";
 
 const Profile: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -184,7 +184,7 @@ const Profile: React.FC = () => {
                 </label>
               </div>
               <div>
-                <Typography>
+                <Typography fontWeight="bold">
                   {`${currentUser?.names}
                   ${currentUser?.surnames}`}
                 </Typography>
@@ -193,20 +193,17 @@ const Profile: React.FC = () => {
           </Grid>
           <Grid item xs={12}>
             <FormWrapper onSubmit={formik.handleSubmit}>
-              <TextField
-                fullWidth
+              <TextInput
                 id="address"
                 name="address"
-                label="Direccion"
+                label="Dirección"
                 value={formik.values.address}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.address && Boolean(formik.errors.address)}
                 helperText={formik.touched.address && formik.errors.address}
-                variant="outlined"
               />
-              <TextField
-                fullWidth
+              <TextInput
                 id="province"
                 name="province"
                 label="Provincia"
@@ -217,10 +214,8 @@ const Profile: React.FC = () => {
                   formik.touched.province && Boolean(formik.errors.province)
                 }
                 helperText={formik.touched.province && formik.errors.province}
-                variant="outlined"
               />
-              <TextField
-                fullWidth
+              <TextInput
                 id="city"
                 name="city"
                 label="Ciudad"
@@ -229,13 +224,11 @@ const Profile: React.FC = () => {
                 onBlur={formik.handleBlur}
                 error={formik.touched.city && Boolean(formik.errors.city)}
                 helperText={formik.touched.city && formik.errors.city}
-                variant="outlined"
               />
-              <TextField
-                fullWidth
+              <TextInput
                 id="postalCode"
                 name="postalCode"
-                label="Codigo Postal"
+                label="Código Postal"
                 value={formik.values.postalCode}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -245,13 +238,11 @@ const Profile: React.FC = () => {
                 helperText={
                   formik.touched.postalCode && formik.errors.postalCode
                 }
-                variant="outlined"
               />
-              <TextField
-                fullWidth
+              <TextInput
                 id="phoneNum"
                 name="phoneNum"
-                label="Telefono"
+                label="Teléfono"
                 value={formik.values.phoneNum}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -259,23 +250,29 @@ const Profile: React.FC = () => {
                   formik.touched.phoneNum && Boolean(formik.errors.phoneNum)
                 }
                 helperText={formik.touched.phoneNum && formik.errors.phoneNum}
-                variant="outlined"
               />
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  disabled={!(formik.isValid && formik.dirty)}
-                >
-                  Confirmar
-                </Button>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 2,
+                }}
+              >
                 <Button
                   type="button"
-                  variant="outlined"
+                  variant="contained"
                   disabled={!formik.dirty}
                   onClick={formik.handleReset}
                 >
                   Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={!(formik.isValid && formik.dirty)}
+                >
+                  Guardar
                 </Button>
               </Box>
             </FormWrapper>

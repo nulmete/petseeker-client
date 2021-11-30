@@ -11,7 +11,7 @@ interface Props extends ButtonProps {
 const ButtonAdd: React.FC<Props> = ({ entity, ...props }) => {
   return (
     <Button variant="contained" startIcon={<AddIcon />} {...props}>
-      Agregar {entity}
+      Agregar
     </Button>
   );
 };

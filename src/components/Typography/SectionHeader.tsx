@@ -3,11 +3,7 @@ import { Typography } from "@mui/material";
 
 const SectionHeader: React.FC = ({ children }) => {
   return (
-    <Typography
-      variant="h6"
-      component="h3"
-      sx={{ fontFamily: "'Roboto Slab', serif", fontWeight: 600 }}
-    >
+    <Typography variant="h6" component="h3" sx={{ fontWeight: 500 }}>
       {children}
     </Typography>
   );
