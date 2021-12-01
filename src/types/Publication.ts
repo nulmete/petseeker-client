@@ -19,7 +19,7 @@ export interface ISighting {
 export interface IPublication {
   title: string;
   publication_id?: number;
-  author_id: string;
+  author_uuid: string;
   author_name: string;
   pet_location: string;
   pet_name: string;

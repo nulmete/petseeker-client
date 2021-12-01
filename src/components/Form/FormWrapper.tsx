@@ -13,7 +13,7 @@ const FormWrapper: React.FC<Props> = ({ children, onSubmit }) => {
       onSubmit={onSubmit}
       sx={{
         "& > *:not(:last-child)": {
-          marginBottom: (theme: Theme) => theme.spacing(2),
+          marginBottom: (theme: Theme) => theme.spacing(3),
         },
       }}
     >

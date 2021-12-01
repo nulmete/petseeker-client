@@ -9,7 +9,6 @@ import React from "react";
 
 interface Props {
   title: string;
-  // content: string;
   children: React.ReactNode;
   onClose: () => void;
   onConfirm: () => void;
@@ -17,7 +16,6 @@ interface Props {
 
 const ConfirmationModal: React.FC<Props> = ({
   title,
-  // content,
   children,
   onClose,
   onConfirm,
@@ -31,11 +29,13 @@ const ConfirmationModal: React.FC<Props> = ({
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button onClick={onConfirm} autoFocus>
-          Confirmar
-        </Button>
+      <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+        {Boolean(onClose) && <Button onClick={onClose}>Cancelar</Button>}
+        {Boolean(onConfirm) && (
+          <Button onClick={onConfirm} autoFocus>
+            Confirmar
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

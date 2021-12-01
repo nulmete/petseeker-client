@@ -1,6 +1,7 @@
+/* eslint-disable camelcase */
 export interface IUser {
   id?: number;
-  uuid: string;
+  user_uuid: string;
   names: string;
   surnames: string;
   address: string;

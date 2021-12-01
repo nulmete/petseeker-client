@@ -3,6 +3,7 @@
 import {
   Box,
   Button,
+  Grid,
   IconButton,
   Paper,
   Theme,
@@ -13,6 +14,7 @@ import { useFormik } from "formik";
 import { useHistory } from "react-router-dom";
 import { AddAPhoto } from "@mui/icons-material";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useSnackbar } from "notistack";
 import PublicationService from "../../../services/publications";
 import CustomMap from "../../../components/CustomMap/CustomMap";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
@@ -25,12 +27,14 @@ import { publicationSchema } from "../../../utils/validationSchemas";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import { ClickedPosition } from "../../../types/ClickedPosition";
 import TextInput from "../../../components/Input/TextInput";
+import FormWrapper from "../../../components/Form/FormWrapper";
+import CustomButton from "../../../components/Button/CustomButton";
 
 const PublicationAdd: React.FC = () => {
   const { currentUser } = useUserContext();
+  const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
 
-  // Image upload
   const [selectedImages, setSelectedImages] = React.useState<
     { preview: string; image: File }[]
   >([]);
@@ -66,7 +70,7 @@ const PublicationAdd: React.FC = () => {
 
         const response = await PublicationService.add({
           ...values,
-          author_id: currentUser!.uuid,
+          author_uuid: currentUser!.user_uuid,
           author_name: `${currentUser?.names} ${currentUser?.surnames}`,
           pet_pic_url: images,
         });
@@ -77,10 +81,12 @@ const PublicationAdd: React.FC = () => {
           history.push(
             `/dashboard/publicaciones/${publicationData.publication_id}`
           );
+          enqueueSnackbar("Publicación creada.", { variant: "success" });
         }
       } catch (error) {
-        // TODO: handle errors
-        console.error({ error });
+        enqueueSnackbar("Error al crear la publicación. Intente nuevamente.", {
+          variant: "error",
+        });
       }
     },
   });
@@ -117,15 +123,7 @@ const PublicationAdd: React.FC = () => {
       <PageContainer>
         <div className="spacing-md">
           <PageHeader>Agregar publicación</PageHeader>
-          <Box
-            component="form"
-            onSubmit={formik.handleSubmit}
-            sx={{
-              "& > *:not(:last-child)": {
-                marginBottom: (theme: Theme) => theme.spacing(2),
-              },
-            }}
-          >
+          <FormWrapper onSubmit={formik.handleSubmit}>
             <TextInput
               id="title"
               name="title"
@@ -167,8 +165,8 @@ const PublicationAdd: React.FC = () => {
               error={formik.touched.pub_type && Boolean(formik.errors.pub_type)}
               helperText={formik.touched.pub_type && formik.errors.pub_type}
             />
-            <div>
-              <Typography>Ubicación</Typography>
+            <div className="spacing-sm">
+              <Typography fontWeight={500}>Ubicación</Typography>
               <CustomMap
                 onMapClick={onMapClick}
                 initialClickedPositions={[clickedPos]}
@@ -193,7 +191,7 @@ const PublicationAdd: React.FC = () => {
             />
             <label htmlFor="images" style={{ display: "inline-block" }}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>Imágenes</Typography>
+                <Typography fontWeight={500}>Imágenes</Typography>
                 <IconButton
                   color="primary"
                   aria-label="Agregar imágenes"
@@ -212,42 +210,68 @@ const PublicationAdd: React.FC = () => {
               />
             </label>
             {selectedImages.length > 0 ? (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Grid container spacing={2}>
                 {selectedImages.map((image) => (
-                  <Paper variant="outlined" sx={{ position: "relative" }}>
-                    <img
-                      src={image.preview}
-                      alt=""
-                      style={{ display: "block", maxHeight: "150px" }}
-                    />
-                    <IconButton
-                      sx={{
-                        position: "absolute",
-                        top: "-14%",
-                        right: "-14%",
-                        color: "red",
-                      }}
-                      aria-label="Eliminar"
-                      onClick={() => {
-                        setSelectedImages((prev) =>
-                          prev.filter((x) => x.preview !== image.preview)
-                        );
-                      }}
-                    >
-                      <CancelIcon />
-                    </IconButton>
-                  </Paper>
+                  <Grid item xs={12} md={3}>
+                    <Paper variant="outlined" sx={{ position: "relative" }}>
+                      <img
+                        src={image.preview}
+                        alt=""
+                        style={{
+                          display: "block",
+                          height: "260px",
+                          width: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <IconButton
+                        sx={{
+                          position: "absolute",
+                          top: 0,
+                          right: 0,
+                          transform: "translate(50%, -50%)",
+                          color: "primary.main",
+                        }}
+                        aria-label="Eliminar"
+                        onClick={() => {
+                          setSelectedImages((prev) =>
+                            prev.filter((x) => x.preview !== image.preview)
+                          );
+                        }}
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </Paper>
+                  </Grid>
                 ))}
-              </Box>
+              </Grid>
             ) : (
-              <Typography>No seleccionaste ninguna imagen.</Typography>
+              <Paper
+                variant="outlined"
+                sx={{
+                  height: "260px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Typography>No seleccionaste ninguna imagen.</Typography>
+              </Paper>
             )}
             <div>
-              <Button type="submit" variant="contained">
+              <CustomButton
+                sx={{
+                  width: {
+                    xs: "100%",
+                    md: "auto",
+                  },
+                }}
+                type="submit"
+              >
                 Crear
-              </Button>
+              </CustomButton>
             </div>
-          </Box>
+          </FormWrapper>
         </div>
       </PageContainer>
     </DashboardLayout>

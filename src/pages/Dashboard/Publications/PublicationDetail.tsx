@@ -27,6 +27,8 @@ import {
   ClickedPosition,
   ClickedPositionType,
 } from "../../../types/ClickedPosition";
+import CustomButton from "../../../components/Button/CustomButton";
+import TextInput from "../../../components/Input/TextInput";
 
 const validationSchema = yup.object({
   comment: yup.string().required("Requerido."),
@@ -91,7 +93,7 @@ const PublicationDetail: React.FC = () => {
     onSubmit: async (values) => {
       await CommentsService.add({
         content: values.comment,
-        author_uuid: currentUser!.uuid,
+        author_uuid: currentUser!.user_uuid,
         author_name: `${currentUser!.names} ${currentUser!.surnames}`,
         created_date: new Date().toISOString(),
         publication_id: +params.id,
@@ -110,7 +112,7 @@ const PublicationDetail: React.FC = () => {
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       const data = {
-        author_uuid: currentUser!.uuid,
+        author_uuid: currentUser!.user_uuid,
         author_name: `${currentUser!.names} ${currentUser!.surnames}`,
         content: values.sighting,
         location: values.location,
@@ -185,7 +187,8 @@ const PublicationDetail: React.FC = () => {
     }
   };
 
-  const isPublicationOwner = publication?.author_id === currentUser?.uuid;
+  const isPublicationOwner =
+    publication?.author_uuid === currentUser?.user_uuid;
 
   if (!publication) return <div>Loading...</div>;
 
@@ -197,28 +200,6 @@ const PublicationDetail: React.FC = () => {
             <PageHeader>
               {publication?.title} ({publication?.pub_type})
             </PageHeader>
-            {isPublicationOwner && (
-              <>
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="error"
-                  onClick={openDeleteModal}
-                >
-                  Finalizar publicación
-                </Button>
-                {isDeleting && (
-                  <ConfirmationModal
-                    title="¿Está seguro que desea finalizar la publicación?"
-                    // content="Esta acción no se puede revertir."
-                    onClose={closeDeleteModal}
-                    onConfirm={() => handlePublicationDelete(+params.id)}
-                  >
-                    Esta acción no se puede revertir.
-                  </ConfirmationModal>
-                )}
-              </>
-            )}
           </Box>
 
           <section className="spacing-sm">
@@ -227,7 +208,14 @@ const PublicationDetail: React.FC = () => {
               <Paper
                 variant="elevation"
                 elevation={2}
-                style={{ display: "inline-block", minWidth: "250px" }}
+                sx={{
+                  display: "inline-block",
+                  minWidth: {
+                    xs: "100%",
+                    sm: "60%",
+                    md: "30%",
+                  },
+                }}
               >
                 {publication.pet_pic_url.length > 0 ? (
                   <Carousel>
@@ -268,7 +256,7 @@ const PublicationDetail: React.FC = () => {
                 Nombre y apellido: {publication?.author_name}
               </Typography>
               {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phoneNum */}
-              <Typography>Telefono: {123456}</Typography>
+              <Typography>Teléfono: {123456}</Typography>
             </div>
           </section>
 
@@ -281,11 +269,12 @@ const PublicationDetail: React.FC = () => {
               }}
             >
               <SectionHeader>Avistamientos</SectionHeader>
-              <ButtonAdd
-                entity="Avistamiento"
+              <CustomButton
                 onClick={enableMapInteraction}
                 disabled={isMapEnabled}
-              />
+              >
+                Agregar
+              </CustomButton>
             </Box>
             <CustomMap
               isEdit
@@ -349,7 +338,7 @@ const PublicationDetail: React.FC = () => {
                 return (
                   <Comment
                     key={comment.created_date}
-                    isOwner={comment.author_uuid === publication.author_id}
+                    isOwner={comment.author_uuid === publication.author_uuid}
                     authorName={comment.author_name}
                     date={comment.created_date}
                     content={comment.content}
@@ -364,10 +353,9 @@ const PublicationDetail: React.FC = () => {
               className="spacing-sm"
               onSubmit={formik.handleSubmit}
             >
-              <TextField
+              <TextInput
                 multiline
                 rows={4}
-                fullWidth
                 id="comment"
                 name="comment"
                 placeholder="Escribí un comentario"
@@ -375,7 +363,6 @@ const PublicationDetail: React.FC = () => {
                 onChange={formik.handleChange}
                 error={formik.touched.comment && Boolean(formik.errors.comment)}
                 helperText={formik.touched.comment && formik.errors.comment}
-                variant="standard"
               />
               <Box
                 sx={{
@@ -385,18 +372,38 @@ const PublicationDetail: React.FC = () => {
                   },
                 }}
               >
-                <ButtonAdd
+                <CustomButton
                   type="submit"
-                  entity="Comentario"
                   sx={{
                     width: {
                       xs: "100%",
                       md: "auto",
                     },
                   }}
-                />
+                >
+                  Agregar
+                </CustomButton>
               </Box>
             </Paper>
+          </section>
+
+          <section>
+            {isPublicationOwner && (
+              <>
+                <CustomButton fullWidth color="error" onClick={openDeleteModal}>
+                  Finalizar publicación
+                </CustomButton>
+                {isDeleting && (
+                  <ConfirmationModal
+                    title="¿Está seguro que desea finalizar la publicación?"
+                    onClose={closeDeleteModal}
+                    onConfirm={() => handlePublicationDelete(+params.id)}
+                  >
+                    Esta acción no se puede revertir.
+                  </ConfirmationModal>
+                )}
+              </>
+            )}
           </section>
         </div>
       </PageContainer>

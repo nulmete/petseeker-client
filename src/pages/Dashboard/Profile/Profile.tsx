@@ -1,7 +1,8 @@
+/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from "react";
 import {
-  Button,
   Grid,
   Box,
   IconButton,
@@ -23,6 +24,7 @@ import ImagePreviewModal from "../../../components/ImagePreviewModal/ImagePrevie
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import ImageNotFound from "../../../assets/imageNotFound.png";
 import TextInput from "../../../components/Input/TextInput";
+import CustomButton from "../../../components/Button/CustomButton";
 
 const Profile: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -38,11 +40,12 @@ const Profile: React.FC = () => {
     },
     validationSchema: userProfileSchema,
     onSubmit: async (values) => {
+      console.log({ currentUser });
       // Also send email, id, uuid, names, surnames, picPath from currentUser
-      const { id, uuid, names, surnames, email, picPath } = currentUser!;
+      const { id, user_uuid, names, surnames, email, picPath } = currentUser!;
       const allValues = {
         id,
-        uuid,
+        user_uuid,
         names,
         surnames,
         email,
@@ -259,21 +262,18 @@ const Profile: React.FC = () => {
                   gap: 2,
                 }}
               >
-                <Button
-                  type="button"
-                  variant="contained"
+                <CustomButton
                   disabled={!formik.dirty}
                   onClick={formik.handleReset}
                 >
                   Cancelar
-                </Button>
-                <Button
+                </CustomButton>
+                <CustomButton
                   type="submit"
-                  variant="contained"
                   disabled={!(formik.isValid && formik.dirty)}
                 >
                   Guardar
-                </Button>
+                </CustomButton>
               </Box>
             </FormWrapper>
           </Grid>

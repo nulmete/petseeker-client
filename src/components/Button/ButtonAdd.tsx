@@ -1,18 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
-import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { ButtonProps } from "@mui/material";
+import CustomButton from "./CustomButton";
 
-interface Props extends ButtonProps {
-  entity: string;
-}
-
-const ButtonAdd: React.FC<Props> = ({ entity, ...props }) => {
+const ButtonAdd: React.FC = ({ ...props }) => {
   return (
-    <Button variant="contained" startIcon={<AddIcon />} {...props}>
+    <CustomButton startIcon={<AddIcon />} {...props}>
       Agregar
-    </Button>
+    </CustomButton>
   );
 };
 

@@ -39,7 +39,7 @@ const Onboarding: React.FC = () => {
       // Sending email and picPath as empty since backend needs them
       const response = await UserService.create({
         ...values,
-        uuid: auth0Id,
+        user_uuid: auth0Id,
         email: "",
         picPath: "",
       });

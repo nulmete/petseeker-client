@@ -13,7 +13,7 @@ const CustomTextField = styled(TextField)(() => ({
     color: "black",
   },
   [outlinedSelectors.join(",")]: {
-    borderColor: "#adadad",
+    borderColor: "rgba(0, 0, 0, 0.12)",
   },
   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
     borderColor: "black",

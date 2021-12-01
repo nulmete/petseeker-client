@@ -12,6 +12,7 @@ import { Link as RouterLink } from "react-router-dom";
 import Button from "@mui/material/Button";
 import LogoutButton from "../Auth/LogoutButton";
 import PetSeeker from "../../assets/petseeker.png";
+import PetSeeker2 from "../../assets/petseeker2.png";
 import Patita from "../../assets/patita.png";
 
 const sections = [
@@ -37,7 +38,13 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
   };
 
   const drawer = (
-    <div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
       <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
         <img
           src={PetSeeker}
@@ -64,7 +71,18 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
           <LogoutButton />
         </ListItem>
       </List>
-    </div>
+      <div
+        style={{
+          marginTop: "auto",
+          marginBottom: "1rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <img src={Patita} style={{ display: "block", height: "75px" }} alt="" />
+      </div>
+    </Box>
   );
 
   return (
@@ -90,7 +108,7 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <div>
               <img
-                src={PetSeeker}
+                src={PetSeeker2}
                 style={{ display: "block", height: "35px" }}
                 alt=""
               />
@@ -103,7 +121,6 @@ const Sidebar: React.FC<Props> = ({ drawerWidth = 240 }) => {
         sx={{
           width: { md: drawerWidth },
           flexShrink: { md: 0 },
-          background: "red",
         }}
       >
         <Drawer
