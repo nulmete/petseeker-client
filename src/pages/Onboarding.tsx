@@ -1,6 +1,5 @@
 import React from "react";
 import { useFormik } from "formik";
-import { TextField, Button } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import UserService from "../services/users";
@@ -8,6 +7,8 @@ import { userOnboardingSchema } from "../utils/validationSchemas";
 import FormWrapper from "../components/Form/FormWrapper";
 import PageHeader from "../components/Typography/PageHeader";
 import PageContainer from "../components/PageContainer/PageContainer";
+import CustomButton from "../components/Button/CustomButton";
+import TextInput from "../components/Input/TextInput";
 
 interface ParamTypes {
   id: string;
@@ -31,17 +32,17 @@ const Onboarding: React.FC = () => {
       address: "",
       province: "",
       city: "",
-      postalCode: "",
-      phoneNum: "",
+      postal_code: "",
+      phone_number: "",
     },
     validationSchema: userOnboardingSchema,
     onSubmit: async (values) => {
-      // Sending email and picPath as empty since backend needs them
+      // Sending email and pic_path as empty since backend needs them
       const response = await UserService.create({
         ...values,
         user_uuid: auth0Id,
         email: "",
-        picPath: "",
+        pic_path: "",
       });
 
       if (response.status !== 201) {
@@ -60,8 +61,7 @@ const Onboarding: React.FC = () => {
       <div className="spacing-sm">
         <PageHeader>Completar Perfil</PageHeader>
         <FormWrapper onSubmit={formik.handleSubmit}>
-          <TextField
-            fullWidth
+          <TextInput
             id="names"
             name="names"
             label="Nombre"
@@ -70,10 +70,8 @@ const Onboarding: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.names && Boolean(formik.errors.names)}
             helperText={formik.touched.names && formik.errors.names}
-            variant="outlined"
           />
-          <TextField
-            fullWidth
+          <TextInput
             id="surnames"
             name="surnames"
             label="Apellido"
@@ -82,10 +80,8 @@ const Onboarding: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.surnames && Boolean(formik.errors.surnames)}
             helperText={formik.touched.surnames && formik.errors.surnames}
-            variant="outlined"
           />
-          <TextField
-            fullWidth
+          <TextInput
             id="address"
             name="address"
             label="Dirección"
@@ -94,10 +90,8 @@ const Onboarding: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.address && Boolean(formik.errors.address)}
             helperText={formik.touched.address && formik.errors.address}
-            variant="outlined"
           />
-          <TextField
-            fullWidth
+          <TextInput
             id="province"
             name="province"
             label="Provincia"
@@ -106,10 +100,8 @@ const Onboarding: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.province && Boolean(formik.errors.province)}
             helperText={formik.touched.province && formik.errors.province}
-            variant="outlined"
           />
-          <TextField
-            fullWidth
+          <TextInput
             id="city"
             name="city"
             label="Ciudad"
@@ -118,38 +110,35 @@ const Onboarding: React.FC = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.city && Boolean(formik.errors.city)}
             helperText={formik.touched.city && formik.errors.city}
-            variant="outlined"
           />
-          <TextField
-            fullWidth
-            id="postalCode"
-            name="postalCode"
+          <TextInput
+            id="postal_code"
+            name="postal_code"
             label="Código Postal"
-            value={formik.values.postalCode}
+            value={formik.values.postal_code}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={
-              formik.touched.postalCode && Boolean(formik.errors.postalCode)
+              formik.touched.postal_code && Boolean(formik.errors.postal_code)
             }
-            helperText={formik.touched.postalCode && formik.errors.postalCode}
-            variant="outlined"
+            helperText={formik.touched.postal_code && formik.errors.postal_code}
           />
-          <TextField
-            fullWidth
-            id="phoneNum"
-            name="phoneNum"
+          <TextInput
+            id="phone_number"
+            name="phone_number"
             label="Teléfono"
-            value={formik.values.phoneNum}
+            value={formik.values.phone_number}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.phoneNum && Boolean(formik.errors.phoneNum)}
-            helperText={formik.touched.phoneNum && formik.errors.phoneNum}
-            variant="outlined"
+            error={
+              formik.touched.phone_number && Boolean(formik.errors.phone_number)
+            }
+            helperText={
+              formik.touched.phone_number && formik.errors.phone_number
+            }
           />
           <div>
-            <Button type="submit" variant="outlined">
-              Confirmar
-            </Button>
+            <CustomButton type="submit">Confirmar</CustomButton>
           </div>
         </FormWrapper>
       </div>

@@ -121,7 +121,6 @@ const PublicationDetail: React.FC = () => {
         timestamp: new Date().toISOString(),
       };
       const response = await SightingsService.add(data);
-      console.log({ response });
       formik2.resetForm();
       await initialize();
     },
@@ -255,7 +254,7 @@ const PublicationDetail: React.FC = () => {
               <Typography>
                 Nombre y apellido: {publication?.author_name}
               </Typography>
-              {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phoneNum */}
+              {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phone_number */}
               <Typography>Teléfono: {123456}</Typography>
             </div>
           </section>

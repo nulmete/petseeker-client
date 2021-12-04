@@ -5,19 +5,20 @@ import { TextField, TextFieldProps } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const outlinedSelectors = [
-  "& .MuiOutlinedInput-notchedOutline",
-  "&:hover .MuiOutlinedInput-notchedOutline",
+  "& .MuiOutlinedInput-root:not(.Mui-error) .MuiOutlinedInput-notchedOutline",
+  "&:hover .MuiOutlinedInput-root:not(.Mui-error) .MuiOutlinedInput-notchedOutline",
 ];
 const CustomTextField = styled(TextField)(() => ({
-  "& label.Mui-focused": {
+  "& label.Mui-focused:not(.Mui-error)": {
     color: "black",
   },
   [outlinedSelectors.join(",")]: {
     borderColor: "rgba(0, 0, 0, 0.12)",
   },
-  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderColor: "black",
-  },
+  "& .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline":
+    {
+      borderColor: "black",
+    },
 }));
 
 const TextInput: React.FC<TextFieldProps> = (props) => {

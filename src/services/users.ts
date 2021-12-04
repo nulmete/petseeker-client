@@ -11,13 +11,7 @@ const create = (data: IUser) => {
 };
 
 const update = (data: IUser) => {
-  let query = "";
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of Object.entries(data)) {
-    query += `${key}=${value}&`;
-  }
-  // slice() to remove last & from query string
-  return http.put(`/user?${query.slice(0, -1)}`);
+  return http.put("/user", data);
 };
 
 const UserService = {

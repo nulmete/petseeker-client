@@ -16,13 +16,13 @@ export const userOnboardingSchema = yup.object({
   address: yup.string().required("Requerido."),
   province: yup.string().required("Requerido."),
   city: yup.string().required("Requerido."),
-  postalCode: yup
+  postal_code: yup
     .string()
     .required("Requerido.")
     .min(4, "Debe tener una longitud de 4 caracteres.")
     .max(4, "Debe tener una longitud de 4 caracteres."),
-  // TODO: find a better regex for phoneNum validation?
-  phoneNum: yup
+  // TODO: find a better regex for phone_number validation?
+  phone_number: yup
     .string()
     .matches(/^\d+$/, "Solo debe contener numeros.")
     .required("Requerido."),
@@ -32,13 +32,13 @@ export const userProfileSchema = yup.object({
   address: yup.string().required("Requerido."),
   province: yup.string().required("Requerido."),
   city: yup.string().required("Requerido."),
-  postalCode: yup
+  postal_code: yup
     .string()
     .required("Requerido.")
     .min(4, "Debe tener una longitud de 4 caracteres.")
     .max(4, "Debe tener una longitud de 4 caracteres."),
-  // TODO: find a better regex for phoneNum validation?
-  phoneNum: yup
+  // TODO: find a better regex for phone_number validation?
+  phone_number: yup
     .string()
     .matches(/^\d+$/, "Solo debe contener numeros.")
     .required("Requerido."),

@@ -13,6 +13,14 @@ import {
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import { PhotoCamera } from "@mui/icons-material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { useHistory } from "react-router-dom";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
 import { userProfileSchema } from "../../../utils/validationSchemas";
@@ -25,31 +33,44 @@ import PageContainer from "../../../components/PageContainer/PageContainer";
 import ImageNotFound from "../../../assets/imageNotFound.png";
 import TextInput from "../../../components/Input/TextInput";
 import CustomButton from "../../../components/Button/CustomButton";
+import SectionHeader from "../../../components/Typography/SectionHeader";
+import { formatDate } from "../../../utils/formatDate";
 
 const Profile: React.FC = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   const { enqueueSnackbar } = useSnackbar();
+  const history = useHistory();
 
   const formik = useFormik({
     initialValues: {
       address: currentUser?.address || "",
       province: currentUser?.province || "",
       city: currentUser?.city || "",
-      postalCode: currentUser?.postalCode || "",
-      phoneNum: currentUser?.phoneNum || "",
+      postal_code: currentUser?.postal_code || "",
+      phone_number: currentUser?.phone_number || "",
     },
     validationSchema: userProfileSchema,
     onSubmit: async (values) => {
-      console.log({ currentUser });
-      // Also send email, id, uuid, names, surnames, picPath from currentUser
-      const { id, user_uuid, names, surnames, email, picPath } = currentUser!;
+      // Also send email, id, uuid, names, surnames, pic_path from currentUser
+      const {
+        id,
+        user_uuid,
+        names,
+        surnames,
+        email,
+        pic_path,
+        events,
+        enabled,
+      } = currentUser!;
       const allValues = {
         id,
         user_uuid,
         names,
         surnames,
         email,
-        picPath,
+        pic_path,
+        events,
+        enabled,
         ...values,
       };
       try {
@@ -91,10 +112,10 @@ const Profile: React.FC = () => {
     const data = await FilesService.upload(formData);
     // TODO: improve error handling here
     if (data) {
-      // Update user's picPath
+      // Update user's pic_path
       const updatedUser = await UserService.update({
         ...currentUser!,
-        picPath: data.secure_url,
+        pic_path: data.secure_url,
       });
       if (updatedUser) {
         setCurrentUser(updatedUser.data as IUser);
@@ -117,6 +138,27 @@ const Profile: React.FC = () => {
     // eslint-disable-next-line consistent-return
     return () => URL.revokeObjectURL(objectURL);
   }, [selectedImage]);
+
+  function createData(time: string, eventType: string, publicationId: number) {
+    const eventText =
+      eventType === "COMMENT_ADDED"
+        ? "Comentario agregado"
+        : "Avistamiento agregado";
+    const timeText = time.replace("ART ", "");
+    const parsedTime = formatDate(timeText);
+    return { time: parsedTime, eventType: eventText, publicationId };
+  }
+
+  const rows = React.useMemo(() => {
+    if (!currentUser || !currentUser.events) return [];
+    return currentUser.events.map((event) => {
+      return createData(
+        event.timestamp,
+        event.event_type,
+        event.publication_id
+      );
+    });
+  }, [currentUser]);
 
   return (
     <DashboardLayout>
@@ -144,7 +186,7 @@ const Profile: React.FC = () => {
                 }}
               >
                 <Avatar
-                  src={currentUser?.picPath || ImageNotFound}
+                  src={currentUser?.pic_path || ImageNotFound}
                   alt="Foto de perfil"
                   sx={{
                     height: "240px",
@@ -229,30 +271,34 @@ const Profile: React.FC = () => {
                 helperText={formik.touched.city && formik.errors.city}
               />
               <TextInput
-                id="postalCode"
-                name="postalCode"
+                id="postal_code"
+                name="postal_code"
                 label="Código Postal"
-                value={formik.values.postalCode}
+                value={formik.values.postal_code}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.postalCode && Boolean(formik.errors.postalCode)
+                  formik.touched.postal_code &&
+                  Boolean(formik.errors.postal_code)
                 }
                 helperText={
-                  formik.touched.postalCode && formik.errors.postalCode
+                  formik.touched.postal_code && formik.errors.postal_code
                 }
               />
               <TextInput
-                id="phoneNum"
-                name="phoneNum"
+                id="phone_number"
+                name="phone_number"
                 label="Teléfono"
-                value={formik.values.phoneNum}
+                value={formik.values.phone_number}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.phoneNum && Boolean(formik.errors.phoneNum)
+                  formik.touched.phone_number &&
+                  Boolean(formik.errors.phone_number)
                 }
-                helperText={formik.touched.phoneNum && formik.errors.phoneNum}
+                helperText={
+                  formik.touched.phone_number && formik.errors.phone_number
+                }
               />
               <Box
                 sx={{
@@ -276,6 +322,45 @@ const Profile: React.FC = () => {
                 </CustomButton>
               </Box>
             </FormWrapper>
+          </Grid>
+          <Grid item xs={12} className="spacing-sm">
+            <SectionHeader>Historial de actividad</SectionHeader>
+            {rows.length > 0 ? (
+              <TableContainer component={Paper} variant="outlined">
+                <Table
+                  sx={{ minWidth: 650 }}
+                  aria-label="Historial de actividad"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Horario</TableCell>
+                      <TableCell>Evento</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <TableRow
+                        onClick={() => {
+                          history.push(
+                            `/dashboard/publicaciones/${row.publicationId}`
+                          );
+                        }}
+                        key={row.time}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                          cursor: "pointer",
+                        }}
+                      >
+                        <TableCell>{row.time}</TableCell>
+                        <TableCell>{row.eventType}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <div>No se encontraron eventos.</div>
+            )}
           </Grid>
         </Grid>
       </PageContainer>
