@@ -11,6 +11,8 @@ import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { IPublication } from "../../types/Publication";
 import ImageNotFound from "../../assets/imageNotFound.png";
+import { PUBLICATION_TYPES } from "../../constants";
+import { getPublicationType } from "../../utils/getPublicationType";
 
 interface Props {
   publication: IPublication;
@@ -51,7 +53,7 @@ const Publication: React.FC<Props> = ({
       />
       <CardContent>
         <Typography variant="body2" color="text.secondary" fontWeight="bold">
-          {pub_type}
+          {getPublicationType(pub_type)}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {pet_name || "Sin nombre"}

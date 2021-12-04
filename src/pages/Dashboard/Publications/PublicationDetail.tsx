@@ -15,7 +15,6 @@ import Comment from "../../../components/Comment/Comment";
 import CustomMap from "../../../components/CustomMap/CustomMap";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import ImageNotFound from "../../../assets/imageNotFound.png";
-import ButtonAdd from "../../../components/Button/ButtonAdd";
 import SightingsService from "../../../services/sightings";
 import { useUserContext } from "../../../context/sessionContext";
 import {
@@ -29,6 +28,8 @@ import {
 } from "../../../types/ClickedPosition";
 import CustomButton from "../../../components/Button/CustomButton";
 import TextInput from "../../../components/Input/TextInput";
+import { PUBLICATION_TYPES } from "../../../constants";
+import { getPublicationType } from "../../../utils/getPublicationType";
 
 const validationSchema = yup.object({
   comment: yup.string().required("Requerido."),
@@ -197,7 +198,7 @@ const PublicationDetail: React.FC = () => {
         <div className="spacing-lg">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <PageHeader>
-              {publication?.title} ({publication?.pub_type})
+              {publication?.title} ({getPublicationType(publication?.pub_type)})
             </PageHeader>
           </Box>
 
@@ -259,76 +260,80 @@ const PublicationDetail: React.FC = () => {
             </div>
           </section>
 
-          <section className="spacing-sm">
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <SectionHeader>Avistamientos</SectionHeader>
-              <CustomButton
-                onClick={enableMapInteraction}
-                disabled={isMapEnabled}
-              >
-                Agregar
-              </CustomButton>
-            </Box>
-            <CustomMap
-              isEdit
-              onMapClick={onMapClick}
-              initialClickedPositions={clickedPos}
-              onMarkerClick={onMarkerClick}
-            />
-            {isAddingSighting && (
-              <ConfirmationModal
-                title="Notas adicionales"
-                onClose={async () => {
-                  // Remove last sighting from state
-                  const clickedPositionsCopy = [...clickedPos];
-                  clickedPositionsCopy.pop();
-                  setClickedPos(clickedPositionsCopy);
-                  closeSightingModal();
-                  formik2.resetForm();
-                }}
-                onConfirm={() => {
-                  formik2.handleSubmit();
-                  closeSightingModal();
+          {publication.pub_type ===
+            +PUBLICATION_TYPES.MASCOTA_PERDIDA.value && (
+            <section className="spacing-sm">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
-                <TextField
-                  multiline
-                  rows={4}
-                  fullWidth
-                  id="sighting"
-                  name="sighting"
-                  value={formik2.values.sighting}
-                  onChange={formik2.handleChange}
-                  error={
-                    formik2.touched.sighting && Boolean(formik2.errors.sighting)
-                  }
-                  helperText={
-                    formik2.touched.sighting && formik2.errors.sighting
-                  }
-                  variant="standard"
-                />
-              </ConfirmationModal>
-            )}
-            {selectedSighting && (
-              <ConfirmationModal
-                title="Notas adicionales"
-                onClose={() => {
-                  setSelectedSighting(undefined);
-                }}
-                onConfirm={() => {
-                  setSelectedSighting(undefined);
-                }}
-              >
-                <Typography>{selectedSighting}</Typography>
-              </ConfirmationModal>
-            )}
-          </section>
+                <SectionHeader>Avistamientos</SectionHeader>
+                <CustomButton
+                  onClick={enableMapInteraction}
+                  disabled={isMapEnabled}
+                >
+                  Agregar
+                </CustomButton>
+              </Box>
+              <CustomMap
+                isEdit
+                onMapClick={onMapClick}
+                initialClickedPositions={clickedPos}
+                onMarkerClick={onMarkerClick}
+              />
+              {isAddingSighting && (
+                <ConfirmationModal
+                  title="Notas adicionales"
+                  onClose={async () => {
+                    // Remove last sighting from state
+                    const clickedPositionsCopy = [...clickedPos];
+                    clickedPositionsCopy.pop();
+                    setClickedPos(clickedPositionsCopy);
+                    closeSightingModal();
+                    formik2.resetForm();
+                  }}
+                  onConfirm={() => {
+                    formik2.handleSubmit();
+                    closeSightingModal();
+                  }}
+                >
+                  <TextField
+                    multiline
+                    rows={4}
+                    fullWidth
+                    id="sighting"
+                    name="sighting"
+                    value={formik2.values.sighting}
+                    onChange={formik2.handleChange}
+                    error={
+                      formik2.touched.sighting &&
+                      Boolean(formik2.errors.sighting)
+                    }
+                    helperText={
+                      formik2.touched.sighting && formik2.errors.sighting
+                    }
+                    variant="standard"
+                  />
+                </ConfirmationModal>
+              )}
+              {selectedSighting && (
+                <ConfirmationModal
+                  title="Notas adicionales"
+                  onClose={() => {
+                    setSelectedSighting(undefined);
+                  }}
+                  onConfirm={() => {
+                    setSelectedSighting(undefined);
+                  }}
+                >
+                  <Typography>{selectedSighting}</Typography>
+                </ConfirmationModal>
+              )}
+            </section>
+          )}
 
           <section className="spacing-sm">
             <SectionHeader>Comentarios</SectionHeader>

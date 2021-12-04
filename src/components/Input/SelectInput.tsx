@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -39,6 +40,7 @@ const CustomSelectInput: React.FC<Props> = ({
   options,
   value,
   onChange,
+  ...props
 }) => {
   const classes = useStyles();
   return (
@@ -51,6 +53,7 @@ const CustomSelectInput: React.FC<Props> = ({
         {label}
       </InputLabel>
       <Select
+        {...props}
         labelId={label}
         id={label}
         value={value}

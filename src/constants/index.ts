@@ -1,8 +1,19 @@
 export const ROUTES = {
   HOME: "/",
   NOT_FOUND: "/404",
+};
 
-  // For testing purposes
-  TEST1: "/test1",
-  TEST2: "/test2",
+export const PUBLICATION_TYPES = {
+  MASCOTA_PERDIDA: {
+    label: "Mascota Perdida",
+    value: "0",
+  },
+  MASCOTA_EN_TRANSITO: {
+    label: "Mascota en Tránsito",
+    value: "1",
+  },
+  MASCOTA_EN_ADOPCION: {
+    label: "Mascota en Adopción",
+    value: "2",
+  },
 };

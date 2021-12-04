@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   Box,
-  Button,
   Grid,
   IconButton,
   Paper,
-  Theme,
+  SelectChangeEvent,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -29,6 +28,8 @@ import { ClickedPosition } from "../../../types/ClickedPosition";
 import TextInput from "../../../components/Input/TextInput";
 import FormWrapper from "../../../components/Form/FormWrapper";
 import CustomButton from "../../../components/Button/CustomButton";
+import CustomSelectInput from "../../../components/Input/SelectInput";
+import { PUBLICATION_TYPES } from "../../../constants";
 
 const PublicationAdd: React.FC = () => {
   const { currentUser } = useUserContext();
@@ -39,6 +40,16 @@ const PublicationAdd: React.FC = () => {
     { preview: string; image: File }[]
   >([]);
 
+  const publicationTypeOptions = [
+    { ...PUBLICATION_TYPES.MASCOTA_PERDIDA },
+    { ...PUBLICATION_TYPES.MASCOTA_EN_TRANSITO },
+    { ...PUBLICATION_TYPES.MASCOTA_EN_ADOPCION },
+  ];
+
+  const [selectedPublicationType, setSelectedPublicationType] = React.useState(
+    publicationTypeOptions[0].value
+  );
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -46,7 +57,7 @@ const PublicationAdd: React.FC = () => {
       pet_name: "",
       pet_race: "",
       pet_location: "",
-      pub_type: 0,
+      pub_type: +selectedPublicationType,
       comments: [],
       sightings: [],
     },
@@ -90,6 +101,11 @@ const PublicationAdd: React.FC = () => {
       }
     },
   });
+
+  const handlePublicationTypeChange = (e: SelectChangeEvent) => {
+    formik.setFieldValue("pub_type", +e.target.value);
+    setSelectedPublicationType(e.target.value);
+  };
 
   // Map
   const [clickedPos, setClickedPos] = React.useState<ClickedPosition>(
@@ -155,15 +171,11 @@ const PublicationAdd: React.FC = () => {
               helperText={formik.touched.pet_race && formik.errors.pet_race}
             />
             {/* TODO: make a dropdown */}
-            <TextInput
-              id="pub_type"
-              name="pub_type"
+            <CustomSelectInput
               label="Tipo de publicación"
-              value={formik.values.pub_type}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pub_type && Boolean(formik.errors.pub_type)}
-              helperText={formik.touched.pub_type && formik.errors.pub_type}
+              options={publicationTypeOptions}
+              value={selectedPublicationType}
+              onChange={handlePublicationTypeChange}
             />
             <div className="spacing-sm">
               <Typography fontWeight={500}>Ubicación</Typography>

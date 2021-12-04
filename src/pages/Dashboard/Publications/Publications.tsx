@@ -15,6 +15,7 @@ import NoResults from "../../../assets/emptystate.svg";
 import { useUserContext } from "../../../context/sessionContext";
 import CustomSelectInput from "../../../components/Input/SelectInput";
 import CustomButton from "../../../components/Button/CustomButton";
+import { PUBLICATION_TYPES } from "../../../constants";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState<IPublication[]>([]);
@@ -36,9 +37,9 @@ const Publications: React.FC = () => {
   // Filtering by pub type
   const publicationTypeOptions = [
     { label: "Todas", value: "ALL" },
-    { label: "Mascota perdida", value: "0" },
-    { label: "Mascota en transito", value: "1" },
-    { label: "Mascota en adopcion", value: "2" },
+    { ...PUBLICATION_TYPES.MASCOTA_PERDIDA },
+    { ...PUBLICATION_TYPES.MASCOTA_EN_TRANSITO },
+    { ...PUBLICATION_TYPES.MASCOTA_EN_ADOPCION },
   ];
   const [selectedPublicationType, setSelectedPublicationType] = useState(
     publicationTypeOptions[0].value
