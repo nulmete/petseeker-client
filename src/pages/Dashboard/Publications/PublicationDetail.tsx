@@ -260,80 +260,79 @@ const PublicationDetail: React.FC = () => {
             </div>
           </section>
 
-          {publication.pub_type ===
-            +PUBLICATION_TYPES.MASCOTA_PERDIDA.value && (
-            <section className="spacing-sm">
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <SectionHeader>Avistamientos</SectionHeader>
+          <section className="spacing-sm">
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <SectionHeader>Avistamientos</SectionHeader>
+              {publication.pub_type ===
+                +PUBLICATION_TYPES.MASCOTA_PERDIDA.value && (
                 <CustomButton
                   onClick={enableMapInteraction}
                   disabled={isMapEnabled}
                 >
                   Agregar
                 </CustomButton>
-              </Box>
-              <CustomMap
-                isEdit
-                onMapClick={onMapClick}
-                initialClickedPositions={clickedPos}
-                onMarkerClick={onMarkerClick}
-              />
-              {isAddingSighting && (
-                <ConfirmationModal
-                  title="Notas adicionales"
-                  onClose={async () => {
-                    // Remove last sighting from state
-                    const clickedPositionsCopy = [...clickedPos];
-                    clickedPositionsCopy.pop();
-                    setClickedPos(clickedPositionsCopy);
-                    closeSightingModal();
-                    formik2.resetForm();
-                  }}
-                  onConfirm={() => {
-                    formik2.handleSubmit();
-                    closeSightingModal();
-                  }}
-                >
-                  <TextField
-                    multiline
-                    rows={4}
-                    fullWidth
-                    id="sighting"
-                    name="sighting"
-                    value={formik2.values.sighting}
-                    onChange={formik2.handleChange}
-                    error={
-                      formik2.touched.sighting &&
-                      Boolean(formik2.errors.sighting)
-                    }
-                    helperText={
-                      formik2.touched.sighting && formik2.errors.sighting
-                    }
-                    variant="standard"
-                  />
-                </ConfirmationModal>
               )}
-              {selectedSighting && (
-                <ConfirmationModal
-                  title="Notas adicionales"
-                  onClose={() => {
-                    setSelectedSighting(undefined);
-                  }}
-                  onConfirm={() => {
-                    setSelectedSighting(undefined);
-                  }}
-                >
-                  <Typography>{selectedSighting}</Typography>
-                </ConfirmationModal>
-              )}
-            </section>
-          )}
+            </Box>
+            <CustomMap
+              isEdit
+              onMapClick={onMapClick}
+              initialClickedPositions={clickedPos}
+              onMarkerClick={onMarkerClick}
+            />
+            {isAddingSighting && (
+              <ConfirmationModal
+                title="Notas adicionales"
+                onClose={async () => {
+                  // Remove last sighting from state
+                  const clickedPositionsCopy = [...clickedPos];
+                  clickedPositionsCopy.pop();
+                  setClickedPos(clickedPositionsCopy);
+                  closeSightingModal();
+                  formik2.resetForm();
+                }}
+                onConfirm={() => {
+                  formik2.handleSubmit();
+                  closeSightingModal();
+                }}
+              >
+                <TextField
+                  multiline
+                  rows={4}
+                  fullWidth
+                  id="sighting"
+                  name="sighting"
+                  value={formik2.values.sighting}
+                  onChange={formik2.handleChange}
+                  error={
+                    formik2.touched.sighting && Boolean(formik2.errors.sighting)
+                  }
+                  helperText={
+                    formik2.touched.sighting && formik2.errors.sighting
+                  }
+                  variant="standard"
+                />
+              </ConfirmationModal>
+            )}
+            {selectedSighting && (
+              <ConfirmationModal
+                title="Notas adicionales"
+                onClose={() => {
+                  setSelectedSighting(undefined);
+                }}
+                onConfirm={() => {
+                  setSelectedSighting(undefined);
+                }}
+              >
+                <Typography>{selectedSighting}</Typography>
+              </ConfirmationModal>
+            )}
+          </section>
 
           <section className="spacing-sm">
             <SectionHeader>Comentarios</SectionHeader>

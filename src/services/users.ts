@@ -14,10 +14,15 @@ const update = (data: IUser) => {
   return http.put("/user", data);
 };
 
+const disable = (id: number) => {
+  return http.delete(`/user/${id}`);
+};
+
 const UserService = {
   getUserByUUID,
   create,
   update,
+  disable,
 };
 
 export default UserService;

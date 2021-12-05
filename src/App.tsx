@@ -1,6 +1,8 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import UserService from "./services/users";
+import { useUserContext } from "./context/sessionContext";
 
 // Components
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
@@ -13,26 +15,28 @@ import Profile from "./pages/Dashboard/Profile/Profile";
 import PublicationAdd from "./pages/Dashboard/Publications/PublicationAdd";
 import PublicationDetail from "./pages/Dashboard/Publications/PublicationDetail";
 import Publications from "./pages/Dashboard/Publications/Publications";
-import UserService from "./services/users";
-import { useUserContext } from "./context/sessionContext";
 
 const App: React.FC = () => {
-  const { user, isLoading } = useAuth0();
-  const { setCurrentUser } = useUserContext();
+  const { user, isLoading, logout } = useAuth0();
+  const { currentUser, setCurrentUser } = useUserContext();
 
   const getCurrentUser = (uuid: string) => {
     return UserService.getUserByUUID(uuid);
   };
 
   React.useEffect(() => {
-    if (user && user.sub) {
+    if (user && user.sub && currentUser === null) {
       const uuid = user.sub.split("|")[1];
       getCurrentUser(uuid)
         .then((res) => {
           setCurrentUser(res);
         })
         .catch((e) => {
-          console.error(e);
+          if (e.response.status === 404) {
+            logout({
+              returnTo: window.location.origin,
+            });
+          }
         });
     }
   }, [user]);

@@ -15,7 +15,7 @@ import { LocationStateProvider } from "./context/locationContext";
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={1}>
+      <SnackbarProvider maxSnack={1} autoHideDuration={2500}>
         <BrowserRouter>
           <Auth0ProviderWithHistory>
             <CssBaseline />

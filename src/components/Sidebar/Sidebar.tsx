@@ -1,15 +1,17 @@
 import React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
 import { Link as RouterLink } from "react-router-dom";
-import Button from "@mui/material/Button";
+import {
+  AppBar,
+  Box,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  Toolbar,
+  Button,
+} from "@mui/material";
 import LogoutButton from "../Auth/LogoutButton";
 import PetSeeker from "../../assets/petseeker.png";
 import PetSeeker2 from "../../assets/petseeker2.png";

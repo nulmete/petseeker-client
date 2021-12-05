@@ -38,21 +38,24 @@ const Onboarding: React.FC = () => {
     validationSchema: userOnboardingSchema,
     onSubmit: async (values) => {
       // Sending email and pic_path as empty since backend needs them
-      const response = await UserService.create({
-        ...values,
-        user_uuid: auth0Id,
-        email: "",
-        pic_path: "",
-      });
-
-      if (response.status !== 201) {
+      try {
+        const response = await UserService.create({
+          ...values,
+          user_uuid: auth0Id,
+          email: "",
+          pic_path: "",
+        });
+        if (response.status === 201) {
+          enqueueSnackbar("Perfil completado con exito.", {
+            variant: "success",
+          });
+          continueAuth();
+        }
+      } catch (error) {
         enqueueSnackbar("Error al completar el perfil. Intente nuevamente.", {
           variant: "error",
         });
-        return;
       }
-
-      continueAuth();
     },
   });
 

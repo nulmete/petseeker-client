@@ -3,13 +3,13 @@ import * as yup from "yup";
 export const userOnboardingSchema = yup.object({
   names: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .matches(/^[a-zA-Z\s]+$/, "No puede contener numeros o simbolos.")
     .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .required("Requerido."),
   surnames: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .matches(/^[a-zA-Z\s]+$/, "No puede contener numeros o simbolos.")
     .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .required("Requerido."),
@@ -21,7 +21,6 @@ export const userOnboardingSchema = yup.object({
     .required("Requerido.")
     .min(4, "Debe tener una longitud de 4 caracteres.")
     .max(4, "Debe tener una longitud de 4 caracteres."),
-  // TODO: find a better regex for phone_number validation?
   phone_number: yup
     .string()
     .matches(/^\d+$/, "Solo debe contener numeros.")
@@ -37,7 +36,6 @@ export const userProfileSchema = yup.object({
     .required("Requerido.")
     .min(4, "Debe tener una longitud de 4 caracteres.")
     .max(4, "Debe tener una longitud de 4 caracteres."),
-  // TODO: find a better regex for phone_number validation?
   phone_number: yup
     .string()
     .matches(/^\d+$/, "Solo debe contener numeros.")
@@ -47,14 +45,19 @@ export const userProfileSchema = yup.object({
 export const publicationSchema = yup.object({
   title: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .matches(/^[a-zA-Z\s]+$/, "No puede contener numeros o simbolos.")
     .required("Requerido."),
   pet_name: yup
     .string()
-    .matches(/^[a-zA-Z]+$/, "No puede contener numeros o simbolos.")
+    .matches(/^[a-zA-Z\s]+$/, "No puede contener numeros o simbolos.")
     .min(2, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .max(50, "Debe tener una longitud de entre 2 y 50 caracteres.")
     .required("Requerido."),
+  pet_pic_url: yup
+    .array()
+    .of(yup.string())
+    .min(1, "Debes elegir entre 1 y 5 imagenes")
+    .max(5, "Debes elegir entre 1 y 5 imagenes"),
   // TODO: validate is one of dropdown values
   pet_race: yup.string().required("Requerido."),
   pet_location: yup.string().required("Requerido."),

@@ -21,6 +21,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useHistory } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { useUserContext } from "../../../context/sessionContext";
 import { userProfileSchema } from "../../../utils/validationSchemas";
@@ -28,18 +29,23 @@ import FormWrapper from "../../../components/Form/FormWrapper";
 import FilesService from "../../../services/files";
 import UserService from "../../../services/users";
 import { IUser } from "../../../types/User";
-import ImagePreviewModal from "../../../components/ImagePreviewModal/ImagePreviewModal";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import ImageNotFound from "../../../assets/imageNotFound.png";
 import TextInput from "../../../components/Input/TextInput";
 import CustomButton from "../../../components/Button/CustomButton";
 import SectionHeader from "../../../components/Typography/SectionHeader";
 import { formatDate } from "../../../utils/formatDate";
+import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
 
 const Profile: React.FC = () => {
-  const { currentUser, setCurrentUser } = useUserContext();
+  const { currentUser, setCurrentUser, refetchUser } = useUserContext();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const { logout } = useAuth0();
+
+  React.useEffect(() => {
+    refetchUser();
+  }, [refetchUser]);
 
   const formik = useFormik({
     initialValues: {
@@ -83,7 +89,7 @@ const Profile: React.FC = () => {
         }
       } catch (error) {
         enqueueSnackbar(
-          "Hubo un error actualizando su información,por favor reintente más tarde.",
+          "Hubo un error actualizando su información, por favor reintente más tarde.",
           {
             variant: "error",
           }
@@ -139,14 +145,19 @@ const Profile: React.FC = () => {
     return () => URL.revokeObjectURL(objectURL);
   }, [selectedImage]);
 
-  function createData(time: string, eventType: string, publicationId: number) {
+  function createData(
+    time: string,
+    eventType: string,
+    publicationId: number,
+    read: boolean
+  ) {
     const eventText =
       eventType === "COMMENT_ADDED"
         ? "Comentario agregado"
         : "Avistamiento agregado";
     const timeText = time.replace("ART ", "");
     const parsedTime = formatDate(timeText);
-    return { time: parsedTime, eventType: eventText, publicationId };
+    return { time: parsedTime, eventType: eventText, publicationId, read };
   }
 
   const rows = React.useMemo(() => {
@@ -155,10 +166,33 @@ const Profile: React.FC = () => {
       return createData(
         event.timestamp,
         event.event_type,
-        event.publication_id
+        event.publication_id,
+        event.read
       );
     });
   }, [currentUser]);
+
+  const [isDeleting, setIsDeleting] = React.useState<boolean>(false);
+
+  const openDeleteModal = () => {
+    setIsDeleting(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleting(false);
+  };
+
+  const handleUserDelete = async (id: number) => {
+    try {
+      await UserService.disable(id);
+      closeDeleteModal();
+      logout({
+        returnTo: window.location.origin,
+      });
+    } catch (error) {
+      console.error("error");
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -174,11 +208,21 @@ const Profile: React.FC = () => {
               }}
             >
               {selectedImagePreview && (
-                <ImagePreviewModal
-                  image={selectedImagePreview}
-                  modalTitle="Modificar foto de perfil"
-                  onClose={handleImageUpload}
-                />
+                <ConfirmationModal
+                  title="Modificar foto de perfil"
+                  onClose={() => {
+                    setSelectedImagePreview(undefined);
+                  }}
+                  onConfirm={handleImageUpload}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img
+                      src={selectedImagePreview}
+                      alt="Foto de perfil"
+                      style={{ display: "block", maxWidth: "140px" }}
+                    />
+                  </div>
+                </ConfirmationModal>
               )}
               <div
                 style={{
@@ -338,9 +382,17 @@ const Profile: React.FC = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {rows.map((row) => (
+                    {rows.map((row, idx) => (
                       <TableRow
-                        onClick={() => {
+                        onClick={async () => {
+                          const currentEvents = [...currentUser!.events!];
+                          const newEvents = currentEvents.map((e, i) => {
+                            return i === idx ? { ...e, read: true } : e;
+                          });
+                          await UserService.update({
+                            ...currentUser!,
+                            events: newEvents,
+                          });
                           history.push(
                             `/dashboard/publicaciones/${row.publicationId}`
                           );
@@ -360,6 +412,21 @@ const Profile: React.FC = () => {
               </TableContainer>
             ) : (
               <div>No se encontraron eventos.</div>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton fullWidth color="error" onClick={openDeleteModal}>
+              Eliminar mi cuenta
+            </CustomButton>
+            {isDeleting && (
+              <ConfirmationModal
+                title="¿Está seguro que desea eliminar su cuenta?"
+                onClose={closeDeleteModal}
+                onConfirm={() => handleUserDelete(currentUser!.id!)}
+              >
+                Esta acción no se puede revertir y se perderán todos los datos
+                asociados al usuario, incluso sus publicaciones activas.
+              </ConfirmationModal>
             )}
           </Grid>
         </Grid>

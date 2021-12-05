@@ -13,6 +13,7 @@ import { IPublication } from "../../types/Publication";
 import ImageNotFound from "../../assets/imageNotFound.png";
 import { PUBLICATION_TYPES } from "../../constants";
 import { getPublicationType } from "../../utils/getPublicationType";
+import { formatDate } from "../../utils/formatDate";
 
 interface Props {
   publication: IPublication;
@@ -25,7 +26,8 @@ const Publication: React.FC<Props> = ({
   distance,
   handlePublicationDetail,
 }) => {
-  const { author_name, pet_name, pub_type, pet_pic_url } = publication;
+  const { author_name, pet_name, pub_type, pet_pic_url, created_date } =
+    publication;
   const imageToShow = pet_pic_url.length > 0 ? pet_pic_url[0] : ImageNotFound;
 
   const theme = useTheme();
@@ -38,12 +40,11 @@ const Publication: React.FC<Props> = ({
       sx={{ cursor: "pointer" }}
     >
       <CardHeader
+        titleTypographyProps={{ variant: "h6" }}
+        subheaderTypographyProps={{ variant: "subtitle2" }}
         sx={{ bgcolor: "secondary.main" }}
-        // TODO: remove?
-        avatar={<Avatar sx={{ bgcolor: red[500] }}>U</Avatar>}
         title={author_name}
-        // TODO: falta timestamp
-        subheader="September 14, 2016"
+        subheader={`${formatDate(created_date)}`}
       />
       <CardMedia
         component="img"
@@ -56,10 +57,10 @@ const Publication: React.FC<Props> = ({
           {getPublicationType(pub_type)}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {pet_name || "Sin nombre"}
+          Nombre: {pet_name || "desconocido"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Distancia: {distance} km
+          Distancia: {distance ? `${distance} km` : "desconocida"}
         </Typography>
       </CardContent>
     </Card>

@@ -99,6 +99,15 @@ const Publications: React.FC = () => {
   useEffect(() => {
     (async () => {
       const response = await PublicationService.get();
+      // Newest publications first
+      response.sort((a, b) => {
+        // eslint-disable-next-line no-nested-ternary
+        return a.created_date < b.created_date
+          ? 1
+          : a.created_date > b.created_date
+          ? -1
+          : 0;
+      });
       setPublications(response);
     })();
   }, []);
@@ -170,9 +179,8 @@ const Publications: React.FC = () => {
                     item
                     xs={12}
                     sm={6}
-                    md={4}
-                    lg={3}
-                    xl={2}
+                    lg={4}
+                    xl={3}
                     key={publication.publication_id}
                   >
                     <Publication

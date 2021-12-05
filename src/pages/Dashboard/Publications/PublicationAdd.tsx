@@ -7,6 +7,7 @@ import {
   Paper,
   SelectChangeEvent,
   Typography,
+  FormHelperText,
 } from "@mui/material";
 import React from "react";
 import { useFormik } from "formik";
@@ -60,11 +61,19 @@ const PublicationAdd: React.FC = () => {
       pub_type: +selectedPublicationType,
       comments: [],
       sightings: [],
+      pet_pic_url: [],
     },
     validationSchema: publicationSchema,
     onSubmit: async (values) => {
       const images: string[] = [];
       try {
+        // Validate max 5 images
+        if (selectedImages.length >= 5 || selectedImages.length < 1) {
+          enqueueSnackbar("Debes elegir entre 1 y 5 imágenes.", {
+            variant: "error",
+          });
+          return;
+        }
         if (selectedImages.length > 0) {
           const uploaders = selectedImages.map((image) => {
             const formData = new FormData();
@@ -81,6 +90,7 @@ const PublicationAdd: React.FC = () => {
 
         const response = await PublicationService.add({
           ...values,
+          created_date: new Date().toISOString(),
           author_uuid: currentUser!.user_uuid,
           author_name: `${currentUser?.names} ${currentUser?.surnames}`,
           pet_pic_url: images,
@@ -123,13 +133,15 @@ const PublicationAdd: React.FC = () => {
 
   const handleImageSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
     const images = e.target.files;
-    // TODO: validate min 1 image - max 5 images.
     if (images && images.length > 0) {
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < images.length; i++) {
         const preview = URL.createObjectURL(images[i]);
         const imageWithPreview = { preview, image: images[i] };
-        setSelectedImages((current) => [...current, imageWithPreview]);
+        setSelectedImages((current) => {
+          formik.setFieldValue("pet_pic_url", [...current, images[i]]);
+          return [...current, imageWithPreview];
+        });
       }
     }
   };
@@ -170,7 +182,6 @@ const PublicationAdd: React.FC = () => {
               error={formik.touched.pet_race && Boolean(formik.errors.pet_race)}
               helperText={formik.touched.pet_race && formik.errors.pet_race}
             />
-            {/* TODO: make a dropdown */}
             <CustomSelectInput
               label="Tipo de publicación"
               options={publicationTypeOptions}
@@ -178,7 +189,14 @@ const PublicationAdd: React.FC = () => {
               onChange={handlePublicationTypeChange}
             />
             <div className="spacing-sm">
-              <Typography fontWeight={500}>Ubicación</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Typography fontWeight={500}>Ubicación</Typography>
+                {formik.errors.pet_location && (
+                  <FormHelperText error sx={{ fontWeight: 500 }}>
+                    Debes elegir una ubicación en el mapa
+                  </FormHelperText>
+                )}
+              </Box>
               <CustomMap
                 onMapClick={onMapClick}
                 initialClickedPositions={[clickedPos]}
@@ -211,6 +229,11 @@ const PublicationAdd: React.FC = () => {
                 >
                   <AddAPhoto />
                 </IconButton>
+                {formik.errors.pet_pic_url && (
+                  <FormHelperText error sx={{ fontWeight: 500 }}>
+                    Debes elegir entre 1 y 5 imagenes.
+                  </FormHelperText>
+                )}
               </Box>
               <input
                 id="images"
@@ -246,9 +269,16 @@ const PublicationAdd: React.FC = () => {
                         }}
                         aria-label="Eliminar"
                         onClick={() => {
-                          setSelectedImages((prev) =>
-                            prev.filter((x) => x.preview !== image.preview)
-                          );
+                          setSelectedImages((prev) => {
+                            const filtered = prev.filter(
+                              (x) => x.preview !== image.preview
+                            );
+                            formik.setFieldValue(
+                              "pet_pic_url",
+                              filtered.map((f) => f.image)
+                            );
+                            return filtered;
+                          });
                         }}
                       >
                         <CancelIcon />

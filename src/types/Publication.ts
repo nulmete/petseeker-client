@@ -18,6 +18,7 @@ export interface ISighting {
 
 export interface IPublication {
   title: string;
+  created_date: string;
   publication_id?: number;
   author_uuid: string;
   author_name: string;

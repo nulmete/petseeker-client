@@ -28,8 +28,8 @@ const ConfirmationModal: React.FC<Props> = ({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-      <DialogContent>{children}</DialogContent>
-      <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+      <DialogContent id="alert-dialog-description">{children}</DialogContent>
+      <DialogActions sx={{ display: "flex", justifyContent: "space-evenly" }}>
         {Boolean(onClose) && <Button onClick={onClose}>Cancelar</Button>}
         {Boolean(onConfirm) && (
           <Button onClick={onConfirm} autoFocus>
