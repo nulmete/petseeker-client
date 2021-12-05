@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import CustomButton from "../Button/CustomButton";
 
 const SignupButton: React.FC = () => {
   const { loginWithRedirect, user } = useAuth0();
@@ -7,8 +8,8 @@ const SignupButton: React.FC = () => {
   if (user) return null;
 
   return (
-    <button
-      type="button"
+    <CustomButton
+      size="large"
       onClick={() =>
         loginWithRedirect({
           screen_hint: "signup",
@@ -16,7 +17,7 @@ const SignupButton: React.FC = () => {
       }
     >
       Sign Up
-    </button>
+    </CustomButton>
   );
 };
 

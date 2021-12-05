@@ -1,11 +1,12 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import CustomButton from "../Button/CustomButton";
 
 const LoginButton: React.FC = () => {
   const { loginWithRedirect } = useAuth0();
   return (
-    <button
-      type="button"
+    <CustomButton
+      size="large"
       onClick={() =>
         loginWithRedirect({
           redirectUri: "http://localhost:3000/dashboard/publicaciones",
@@ -13,7 +14,7 @@ const LoginButton: React.FC = () => {
       }
     >
       Log In
-    </button>
+    </CustomButton>
   );
 };
 
