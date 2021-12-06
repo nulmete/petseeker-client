@@ -405,11 +405,11 @@ const PublicationDetail: React.FC = () => {
             {isPublicationOwner && (
               <>
                 <CustomButton fullWidth color="error" onClick={openDeleteModal}>
-                  Finalizar publicación
+                  Eliminar publicación
                 </CustomButton>
                 {isDeleting && (
                   <ConfirmationModal
-                    title="¿Está seguro que desea finalizar la publicación?"
+                    title="¿Está seguro que desea eliminar la publicación?"
                     onClose={closeDeleteModal}
                     onConfirm={() => handlePublicationDelete(+params.id)}
                   >
