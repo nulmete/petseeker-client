@@ -21,6 +21,7 @@ const Home: React.FC = () => {
         justifyContent: "center",
         flexDirection: "column",
         gap: 30,
+        backgroundColor: "#f2efe6",
       }}
     >
       <div>

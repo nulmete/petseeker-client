@@ -68,7 +68,7 @@ const PublicationAdd: React.FC = () => {
       const images: string[] = [];
       try {
         // Validate max 5 images
-        if (selectedImages.length >= 5 || selectedImages.length < 1) {
+        if (selectedImages.length > 5 || selectedImages.length < 1) {
           enqueueSnackbar("Debes elegir entre 1 y 5 imágenes.", {
             variant: "error",
           });
@@ -139,7 +139,11 @@ const PublicationAdd: React.FC = () => {
         const preview = URL.createObjectURL(images[i]);
         const imageWithPreview = { preview, image: images[i] };
         setSelectedImages((current) => {
-          formik.setFieldValue("pet_pic_url", [...current, images[i]]);
+          const currentWithoutPreview = current.map((c) => c.image);
+          formik.setFieldValue("pet_pic_url", [
+            ...currentWithoutPreview,
+            images[i],
+          ]);
           return [...current, imageWithPreview];
         });
       }
