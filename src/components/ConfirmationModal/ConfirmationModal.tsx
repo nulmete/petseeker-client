@@ -30,9 +30,13 @@ const ConfirmationModal: React.FC<Props> = ({
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent id="alert-dialog-description">{children}</DialogContent>
       <DialogActions sx={{ display: "flex", justifyContent: "space-evenly" }}>
-        {Boolean(onClose) && <Button onClick={onClose}>Cancelar</Button>}
+        {Boolean(onClose) && (
+          <Button onClick={onClose} id="dismiss">
+            Cancelar
+          </Button>
+        )}
         {Boolean(onConfirm) && (
-          <Button onClick={onConfirm} autoFocus>
+          <Button onClick={onConfirm} autoFocus id="confirm">
             Confirmar
           </Button>
         )}

@@ -38,6 +38,7 @@ const Publication: React.FC<Props> = ({
       elevation={6}
       onClick={handlePublicationDetail}
       sx={{ cursor: "pointer" }}
+      id="publication"
     >
       <CardHeader
         titleTypographyProps={{ variant: "h6" }}

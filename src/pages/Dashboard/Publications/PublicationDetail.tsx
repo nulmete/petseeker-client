@@ -30,6 +30,7 @@ import CustomButton from "../../../components/Button/CustomButton";
 import TextInput from "../../../components/Input/TextInput";
 import { PUBLICATION_TYPES } from "../../../constants";
 import { getPublicationType } from "../../../utils/getPublicationType";
+import UserService from "../../../services/users";
 
 const validationSchema = yup.object({
   comment: yup.string().required("Requerido."),
@@ -57,13 +58,14 @@ const PublicationDetail: React.FC = () => {
 
   const [publication, setPublication] = React.useState<IPublication>();
 
+  const [phoneNum, setPhoneNum] = React.useState<string>("");
+
   const initialize = () => {
-    return PublicationService.getById(params.id).then((pub) => {
+    return PublicationService.getById(params.id).then(async (pub) => {
       setPublication(pub);
 
       // initialize position
       const initialPos = deserializeLocation(pub.pet_location);
-      // setInitialPosition(initialPos);
       setClickedPos((current) => [
         ...current,
         { position: initialPos, type: "initial" },
@@ -77,8 +79,11 @@ const PublicationDetail: React.FC = () => {
         position: s,
         type: "sighting" as ClickedPositionType,
       }));
-      // setInitialSightings(allSightings);
       setClickedPos((current) => [...current, ...allSightings]);
+
+      // set author's phone number
+      const author = await UserService.getUserByUUID(pub.author_uuid);
+      setPhoneNum(author.phone_number);
     });
   };
 
@@ -198,7 +203,10 @@ const PublicationDetail: React.FC = () => {
         <div className="spacing-lg">
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
             <PageHeader>
-              {publication?.title} ({getPublicationType(publication?.pub_type)})
+              <span id="title">{publication?.title}</span> -{" "}
+              <span id="pub_type">
+                {getPublicationType(publication?.pub_type)}
+              </span>
             </PageHeader>
           </Box>
 
@@ -243,8 +251,12 @@ const PublicationDetail: React.FC = () => {
                 )}
               </Paper>
               <div>
-                <Typography>Nombre: {publication?.pet_name}</Typography>
-                <Typography>Raza: {publication?.pet_race}</Typography>
+                <Typography id="pet_name">
+                  Nombre: {publication?.pet_name}
+                </Typography>
+                <Typography id="pet_race">
+                  Raza: {publication?.pet_race}
+                </Typography>
               </div>
             </div>
           </section>
@@ -252,11 +264,10 @@ const PublicationDetail: React.FC = () => {
           <section className="spacing-sm">
             <SectionHeader>Dueño de la mascota</SectionHeader>
             <div>
-              <Typography>
+              <Typography id="author_name">
                 Nombre y apellido: {publication?.author_name}
               </Typography>
-              {/* TODO: tendria que hacer GET /user/{uuid} y buscar el phone_number */}
-              <Typography>Teléfono: {123456}</Typography>
+              <Typography id="phone_number">Teléfono: {phoneNum}</Typography>
             </div>
           </section>
 
