@@ -4,6 +4,7 @@ import {
   ClickedPosition,
   ClickedPositionType,
 } from "../../types/ClickedPosition";
+import Loading from "../Loading";
 
 interface Props {
   isEdit?: boolean;
@@ -67,7 +68,7 @@ const CustomMap: React.FC<Props> = ({
   };
 
   // TODO: show loader
-  if (!isLoaded) return <p>Map is loading...</p>;
+  if (!isLoaded) return <Loading />;
 
   return (
     <>
