@@ -371,10 +371,7 @@ const Profile: React.FC = () => {
             <SectionHeader>Historial de actividad</SectionHeader>
             {rows.length > 0 ? (
               <TableContainer component={Paper} variant="outlined">
-                <Table
-                  sx={{ minWidth: 650 }}
-                  aria-label="Historial de actividad"
-                >
+                <Table aria-label="Historial de actividad">
                   <TableHead>
                     <TableRow>
                       <TableCell>Horario</TableCell>
