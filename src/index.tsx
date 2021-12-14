@@ -4,6 +4,8 @@ import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@emotion/react";
 import { BrowserRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
+import DateAdapter from "@mui/lab/AdapterDateFns";
+import { LocalizationProvider } from "@mui/lab";
 import reportWebVitals from "./reportWebVitals";
 import Auth0ProviderWithHistory from "./auth/auth0-provider-with-history";
 import { UserStateProvider } from "./context/sessionContext";
@@ -15,18 +17,20 @@ import { LocationStateProvider } from "./context/locationContext";
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={1} autoHideDuration={2500}>
-        <BrowserRouter>
-          <Auth0ProviderWithHistory>
-            <CssBaseline />
-            <UserStateProvider>
-              <LocationStateProvider>
-                <App />
-              </LocationStateProvider>
-            </UserStateProvider>
-          </Auth0ProviderWithHistory>
-        </BrowserRouter>
-      </SnackbarProvider>
+      <LocalizationProvider dateAdapter={DateAdapter}>
+        <SnackbarProvider maxSnack={1} autoHideDuration={2500}>
+          <BrowserRouter>
+            <Auth0ProviderWithHistory>
+              <CssBaseline />
+              <UserStateProvider>
+                <LocationStateProvider>
+                  <App />
+                </LocationStateProvider>
+              </UserStateProvider>
+            </Auth0ProviderWithHistory>
+          </BrowserRouter>
+        </SnackbarProvider>
+      </LocalizationProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")

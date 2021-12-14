@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Box, Grid, SelectChangeEvent } from "@mui/material";
 import { useHistory } from "react-router-dom";
-import ButtonAdd from "../../../components/Button/ButtonAdd";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import Publication from "../../../components/Publication/Publication";
 import PublicationService from "../../../services/publications";
 import { IPublication } from "../../../types/Publication";
 import PageHeader from "../../../components/Typography/PageHeader";
+import ConfirmationModal from "../../../components/ConfirmationModal/ConfirmationModal";
 import PageContainer from "../../../components/PageContainer/PageContainer";
 import { deserializeLocation } from "../../../utils/locationParser";
 import getDistanceFromLatLonInKm from "../../../utils/calculateDistance";
@@ -16,11 +17,31 @@ import { useUserContext } from "../../../context/sessionContext";
 import CustomSelectInput from "../../../components/Input/SelectInput";
 import CustomButton from "../../../components/Button/CustomButton";
 import { PUBLICATION_TYPES } from "../../../constants";
+import TextInput from "../../../components/Input/TextInput";
 
 const Publications: React.FC = () => {
   const [publications, setPublications] = useState<IPublication[]>([]);
+  const [filteredPublications, setFilteredPublications] = useState<
+    IPublication[]
+  >([]);
+  const [isFiltering, setIsFiltering] = React.useState<boolean>(false);
+
   const { currentLocation } = useLocationContext();
   const { currentUser } = useUserContext();
+
+  // Filtering by date
+  const [startDateFilter, setStartDateFilter] = React.useState<Date | null>(
+    new Date()
+  );
+  const handleStartDateChange = (newValue: Date | null) => {
+    setStartDateFilter(newValue);
+  };
+  const [endDateFilter, setEndDateFilter] = React.useState<Date | null>(
+    new Date()
+  );
+  const handleEndDateChange = (newValue: Date | null) => {
+    setEndDateFilter(newValue);
+  };
 
   // Filtering by user
   const userFilterOptions = [
@@ -82,19 +103,22 @@ const Publications: React.FC = () => {
     return distance >= lower && distance <= upper;
   };
 
-  const filteredPublications = publications.filter((publication) => {
-    return (
-      (selectedUserFilter === "CURRENT_USER"
-        ? isFromCurrentUser(publication)
-        : true) &&
-      (selectedProximity !== "ALL"
-        ? isBetween(publication, 0, +selectedProximity)
-        : true) &&
-      (selectedPublicationType !== "ALL"
-        ? isOfType(publication, +selectedPublicationType)
-        : true)
-    );
-  });
+  const handleApplyFilters = () => {
+    const filtered = publications.filter((publication) => {
+      return (
+        (selectedUserFilter === "CURRENT_USER"
+          ? isFromCurrentUser(publication)
+          : true) &&
+        (selectedProximity !== "ALL"
+          ? isBetween(publication, 0, +selectedProximity)
+          : true) &&
+        (selectedPublicationType !== "ALL"
+          ? isOfType(publication, +selectedPublicationType)
+          : true)
+      );
+    });
+    setFilteredPublications(filtered);
+  };
 
   useEffect(() => {
     (async () => {
@@ -109,6 +133,7 @@ const Publications: React.FC = () => {
           : 0;
       });
       setPublications(response);
+      setFilteredPublications(response);
     })();
   }, []);
 
@@ -124,6 +149,86 @@ const Publications: React.FC = () => {
 
   return (
     <DashboardLayout>
+      <div
+        style={{
+          backgroundColor: "yellow",
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "12px",
+        }}
+      >
+        <div>
+          {filteredPublications.length}{" "}
+          {filteredPublications.length === 1 ? "Resultado" : "Resultados"}
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            setIsFiltering(true);
+          }}
+        >
+          Filtrar
+        </button>
+        {isFiltering && (
+          <ConfirmationModal
+            title="Modificar foto de perfil"
+            onClose={() => {
+              setIsFiltering(false);
+            }}
+            onConfirm={() => {
+              handleApplyFilters();
+              setIsFiltering(false);
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={3}>
+                <MobileDatePicker
+                  label="Fecha de creación"
+                  inputFormat="dd/MM/yyyy"
+                  value={startDateFilter}
+                  onChange={handleStartDateChange}
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  renderInput={(params) => <TextInput {...params} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <MobileDatePicker
+                  label="Fecha de creación"
+                  inputFormat="dd/MM/yyyy"
+                  value={endDateFilter}
+                  onChange={handleEndDateChange}
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  renderInput={(params) => <TextInput {...params} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <CustomSelectInput
+                  label="Tipo de publicación"
+                  options={publicationTypeOptions}
+                  value={selectedPublicationType}
+                  onChange={handlePublicationTypeChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <CustomSelectInput
+                  label="Radio de proximidad"
+                  options={proximityOptions}
+                  value={selectedProximity}
+                  onChange={handleProximityChange}
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <CustomSelectInput
+                  label="Dueño de la mascota"
+                  options={userFilterOptions}
+                  value={selectedUserFilter}
+                  onChange={handleUserFilterChange}
+                />
+              </Grid>
+            </Grid>
+          </ConfirmationModal>
+        )}
+      </div>
       <PageContainer>
         <div className="spacing-sm">
           <Box
@@ -136,8 +241,28 @@ const Publications: React.FC = () => {
             <PageHeader>Publicaciones</PageHeader>
             <CustomButton onClick={handlePublicationAdd}>Agregar</CustomButton>
           </Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
+          {/* <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <MobileDatePicker
+                label="Fecha de creación"
+                inputFormat="dd/MM/yyyy"
+                value={startDateFilter}
+                onChange={handleStartDateChange}
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                renderInput={(params) => <TextInput {...params} />}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
+              <MobileDatePicker
+                label="Fecha de creación"
+                inputFormat="dd/MM/yyyy"
+                value={endDateFilter}
+                onChange={handleEndDateChange}
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                renderInput={(params) => <TextInput {...params} />}
+              />
+            </Grid>
+            <Grid item xs={12} md={3}>
               <CustomSelectInput
                 label="Tipo de publicación"
                 options={publicationTypeOptions}
@@ -145,7 +270,7 @@ const Publications: React.FC = () => {
                 onChange={handlePublicationTypeChange}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3}>
               <CustomSelectInput
                 label="Radio de proximidad"
                 options={proximityOptions}
@@ -153,7 +278,7 @@ const Publications: React.FC = () => {
                 onChange={handleProximityChange}
               />
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={3}>
               <CustomSelectInput
                 label="Dueño de la mascota"
                 options={userFilterOptions}
@@ -161,7 +286,7 @@ const Publications: React.FC = () => {
                 onChange={handleUserFilterChange}
               />
             </Grid>
-          </Grid>
+          </Grid> */}
           {filteredPublications.length > 0 ? (
             <Grid container spacing={4}>
               {filteredPublications.map((publication) => {

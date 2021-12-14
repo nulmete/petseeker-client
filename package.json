@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.8.0",
+    "@date-io/date-fns": "^2.11.0",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.4",
+    "@mui/lab": "^5.0.0-alpha.59",
     "@mui/material": "^5.0.4",
     "@mui/styles": "^5.2.1",
     "@react-google-maps/api": "^2.5.0",
