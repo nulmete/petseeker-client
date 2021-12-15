@@ -374,7 +374,7 @@ const Profile: React.FC = () => {
                 <Table aria-label="Historial de actividad">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Horario</TableCell>
+                      <TableCell>Fecha y Horario</TableCell>
                       <TableCell>Evento</TableCell>
                     </TableRow>
                   </TableHead>
