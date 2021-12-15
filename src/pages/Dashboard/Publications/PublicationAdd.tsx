@@ -235,7 +235,7 @@ const PublicationAdd: React.FC = () => {
                 </IconButton>
                 {formik.errors.pet_pic_url && (
                   <FormHelperText error sx={{ fontWeight: 500 }}>
-                    Debes elegir entre 1 y 5 imagenes.
+                    Debes elegir entre 1 y 5 imágenes.
                   </FormHelperText>
                 )}
               </Box>

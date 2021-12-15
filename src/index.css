@@ -19,7 +19,7 @@
 }
 
 .spacing-xs > * + * {
-  margin-top: .5rem !important;
+  margin-top: .35rem !important;
 }
 
 .spacing-sm > * + * {
