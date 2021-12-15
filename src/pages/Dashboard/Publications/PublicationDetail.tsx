@@ -31,6 +31,7 @@ import TextInput from "../../../components/Input/TextInput";
 import { PUBLICATION_TYPES } from "../../../constants";
 import { getPublicationType } from "../../../utils/getPublicationType";
 import UserService from "../../../services/users";
+import { formatDate } from "../../../utils/formatDate";
 
 const validationSchema = yup.object({
   comment: yup.string().required("Requerido."),
@@ -54,7 +55,8 @@ const PublicationDetail: React.FC = () => {
     [] as ClickedPosition[]
   );
 
-  const [selectedSighting, setSelectedSighting] = React.useState<string>();
+  const [selectedSighting, setSelectedSighting] =
+    React.useState<{ content: string; date: string; author: string }>();
 
   const [publication, setPublication] = React.useState<IPublication>();
 
@@ -157,7 +159,13 @@ const PublicationDetail: React.FC = () => {
         return s.location === stringifiedLocation;
       });
       if (sightings && sightings.length > 0) {
-        setSelectedSighting(sightings[0].content);
+        // eslint-disable-next-line camelcase
+        const { content, timestamp, author_name } = sightings[0];
+        setSelectedSighting({
+          content,
+          author: author_name,
+          date: formatDate(timestamp)!,
+        });
       }
     }
   };
@@ -332,7 +340,7 @@ const PublicationDetail: React.FC = () => {
             )}
             {selectedSighting && (
               <ConfirmationModal
-                title="Notas adicionales"
+                title="Avistamiento"
                 onClose={() => {
                   setSelectedSighting(undefined);
                 }}
@@ -340,7 +348,17 @@ const PublicationDetail: React.FC = () => {
                   setSelectedSighting(undefined);
                 }}
               >
-                <Typography>{selectedSighting}</Typography>
+                <div className="spacing-sm">
+                  <div>
+                    <Typography>
+                      <strong>{selectedSighting.author}</strong>
+                    </Typography>
+                    <Typography sx={{ fontSize: ".85rem" }}>
+                      {selectedSighting.date}
+                    </Typography>
+                  </div>
+                  <Typography>{selectedSighting.content}</Typography>
+                </div>
               </ConfirmationModal>
             )}
           </section>
