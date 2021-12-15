@@ -146,18 +146,20 @@ const Publications: React.FC = () => {
     (async () => {
       const response = await PublicationService.get();
       // Newest publications first
-      response.sort((a, b) => {
-        // eslint-disable-next-line no-nested-ternary
-        return a.created_date < b.created_date
-          ? 1
-          : a.created_date > b.created_date
-          ? -1
-          : 0;
-      });
-      setPublications(response);
-      setFilteredPublications(response);
-      const oldestDate = new Date(response[response.length - 1].created_date);
-      setStartDateFilter(oldestDate);
+      if (response && response.length > 0) {
+        response.sort((a, b) => {
+          // eslint-disable-next-line no-nested-ternary
+          return a.created_date < b.created_date
+            ? 1
+            : a.created_date > b.created_date
+            ? -1
+            : 0;
+        });
+        setPublications(response);
+        setFilteredPublications(response);
+        const oldestDate = new Date(response[response.length - 1].created_date);
+        setStartDateFilter(oldestDate);
+      }
     })();
   }, []);
 
