@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { useSnackbar } from "notistack";
 import Carousel from "react-material-ui-carousel";
-import { Box, TextField, Typography, Paper, Button } from "@mui/material";
+import { Box, TextField, Typography, Paper } from "@mui/material";
 import DashboardLayout from "../../../components/Dashboard/DashboardLayout";
 import { IPublication } from "../../../types/Publication";
 import PublicationService from "../../../services/publications";
@@ -128,7 +128,7 @@ const PublicationDetail: React.FC = () => {
         publication_id: +params.id,
         timestamp: new Date().toISOString(),
       };
-      const response = await SightingsService.add(data);
+      await SightingsService.add(data);
       formik2.resetForm();
       await initialize();
     },
@@ -264,6 +264,9 @@ const PublicationDetail: React.FC = () => {
                 </Typography>
                 <Typography id="pet_race">
                   Raza: {publication?.pet_race}
+                </Typography>
+                <Typography id="additional_notes">
+                  Notas adicionales: {publication?.description}
                 </Typography>
               </div>
             </div>

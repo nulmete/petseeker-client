@@ -20,6 +20,7 @@ export interface IPublication {
   title: string;
   created_date: string;
   publication_id?: number;
+  description: string;
   author_uuid: string;
   author_name: string;
   pet_location: string;
