@@ -290,7 +290,12 @@ const PublicationDetail: React.FC = () => {
                 justifyContent: "space-between",
               }}
             >
-              <SectionHeader>Avistamientos</SectionHeader>
+              <SectionHeader>
+                {publication.pub_type ===
+                +PUBLICATION_TYPES.MASCOTA_PERDIDA.value
+                  ? "Avistamientos"
+                  : "Ubicación"}
+              </SectionHeader>
               {publication.pub_type ===
                 +PUBLICATION_TYPES.MASCOTA_PERDIDA.value && (
                 <CustomButton
