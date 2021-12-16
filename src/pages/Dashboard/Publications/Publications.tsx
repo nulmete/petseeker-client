@@ -109,12 +109,6 @@ const Publications: React.FC = () => {
     return distance >= lower && distance <= upper;
   };
 
-  console.log({
-    startDateFilter,
-    endDateFilter,
-    nameFilter,
-  });
-
   const handleApplyFilters = () => {
     const filtered = publications.filter((publication) => {
       return (
@@ -136,7 +130,9 @@ const Publications: React.FC = () => {
         endDateFilter &&
         endDateFilter >= new Date(publication.created_date) &&
         // pet name
-        (nameFilter !== "" ? publication.pet_name.includes(nameFilter) : true)
+        (nameFilter.toLowerCase() !== ""
+          ? publication.pet_name.includes(nameFilter.toLowerCase())
+          : true)
       );
     });
     setFilteredPublications(filtered);
